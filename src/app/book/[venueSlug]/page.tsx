@@ -38,6 +38,7 @@ export default function BookingPage() {
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
   } = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
