@@ -1,19 +1,140 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { MapPin, Users, ArrowUpRight } from "lucide-react";
+import { gsap } from "gsap";
 import { venues } from "@/lib/data/venues";
 import { providers } from "@/lib/data/providers";
 import { formatPrice } from "@/lib/utils";
 import ScrollReveal from "@/components/motion/ScrollReveal";
 import SplitTextReveal from "@/components/motion/SplitTextReveal";
+import { useGsap } from "@/components/motion/GsapProvider";
+
+// Desktop 3D settings
+const TOTAL_ITEMS = 12; // 6 venues duplicated
+const ANGLE_STEP = 360 / TOTAL_ITEMS;
+const RADIUS = 600; // Calculated based on 320px width
 
 export default function FeaturedVenueGrid() {
+  const { prefersReducedMotion } = useGsap();
+  const cylinderRef = useRef<HTMLDivElement>(null);
+  const tweenRef = useRef<gsap.core.Tween | null>(null);
+
   const featuredVenues = venues.filter((v) => v.status === "published").slice(0, 6);
+  // Duplicate for smooth 3D loop
+  const carouselItems = [...featuredVenues, ...featuredVenues];
+
+  useEffect(() => {
+    // Only animate the 3D cylinder if we have the ref and motion is allowed
+    // and if the viewport is large enough (we handle mobile via CSS)
+    if (!cylinderRef.current || prefersReducedMotion || window.innerWidth < 768) return;
+
+    // Set initial 3D rotation based on mouse or just auto-rotate
+    tweenRef.current = gsap.to(cylinderRef.current, {
+      rotationY: "-=360",
+      duration: 60,
+      ease: "none",
+      repeat: -1,
+    });
+
+    return () => {
+      tweenRef.current?.kill();
+    };
+  }, [prefersReducedMotion]);
+
+  const handleMouseEnter = () => {
+    if (tweenRef.current) gsap.to(tweenRef.current, { timeScale: 0, duration: 0.5 });
+  };
+
+  const handleMouseLeave = () => {
+    if (tweenRef.current) gsap.to(tweenRef.current, { timeScale: 1, duration: 0.5 });
+  };
+
+  // The Venue Card component for reuse
+  const VenueCardNode = ({ venue, index, is3D = false }: { venue: typeof featuredVenues[0], index: number, is3D?: boolean }) => {
+    const provider = providers.find((p) => p.id === venue.providerId);
+    
+    return (
+      <Link
+        href={`/venues/${venue.slug}`}
+        className={`group block overflow-hidden rounded-2xl border border-border bg-bg-surface transition-all duration-500 hover:border-border-gold hover:shadow-[var(--shadow-glow)] no-underline flex-shrink-0 ${is3D ? 'absolute top-0 left-1/2 -translate-x-1/2 w-[320px]' : 'w-[300px] md:w-[350px] relative snap-center'}`}
+        style={is3D ? {
+          transform: `rotateY(${index * ANGLE_STEP}deg) translateZ(${RADIUS}px)`,
+          backfaceVisibility: "hidden", // Hide back sides for a cleaner look
+        } : {}}
+      >
+        {/* Image Placeholder / Gradient */}
+        <div className="relative aspect-[4/3] overflow-hidden">
+          <div
+            className="absolute inset-0 transition-transform duration-700 group-hover:scale-105"
+            style={{
+              background: getVenueGradient(index),
+            }}
+          />
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-bg-surface via-transparent to-transparent" />
+
+          {/* Price Badge */}
+          {venue.priceFrom && (
+            <div className="absolute top-4 right-4 rounded-full bg-bg/80 px-3 py-1 text-xs font-medium text-gold backdrop-blur-sm border border-border-gold">
+              From {formatPrice(venue.priceFrom)}
+            </div>
+          )}
+        </div>
+
+        {/* Content */}
+        <div className="p-6">
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <h3 className="font-display text-xl font-medium text-text-primary group-hover:text-gold transition-colors duration-300">
+                {venue.name}
+              </h3>
+              <p className="mt-1 text-sm text-gold/80">
+                {provider?.brandName}
+              </p>
+            </div>
+            <ArrowUpRight className="h-5 w-5 text-text-muted transition-all duration-300 group-hover:text-gold group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </div>
+
+          <p className="mt-3 line-clamp-2 text-sm text-text-secondary">
+            {venue.shortDescription}
+          </p>
+
+          {/* Meta */}
+          <div className="mt-4 flex items-center gap-4 text-xs text-text-muted">
+            <span className="flex items-center gap-1">
+              <MapPin className="h-3 w-3" />
+              {venue.city}
+            </span>
+            <span className="flex items-center gap-1">
+              <Users className="h-3 w-3" />
+              {venue.capacityMin}–{venue.capacityMax} guests
+            </span>
+          </div>
+
+          {/* Event Tags */}
+          <div className="mt-4 flex flex-wrap gap-2">
+            {venue.eventTypes.slice(0, 3).map((type) => (
+              <span
+                key={type}
+                className="rounded-full bg-bg-elevated px-2.5 py-1 text-xs text-text-muted"
+              >
+                {type}
+              </span>
+            ))}
+          </div>
+        </div>
+      </Link>
+    );
+  };
 
   return (
-    <section className="relative py-24 lg:py-32">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+    <section className="relative py-24 lg:py-32 overflow-hidden">
+      {/* Background ambient lighting for the carousel */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-gold/5 blur-[120px] rounded-full pointer-events-none hidden md:block" />
+
+      <div className="mx-auto max-w-7xl px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="mb-16 text-center">
           <ScrollReveal>
@@ -34,97 +155,61 @@ export default function FeaturedVenueGrid() {
             </p>
           </ScrollReveal>
         </div>
-
-        {/* Venue Grid */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {featuredVenues.map((venue, index) => {
-            const provider = providers.find((p) => p.id === venue.providerId);
-            return (
-              <ScrollReveal key={venue.id} delay={index * 0.1} distance={50}>
-                <Link
-                  href={`/venues/${venue.slug}`}
-                  className="group relative block overflow-hidden rounded-2xl border border-border bg-bg-surface transition-all duration-500 hover:border-border-gold hover:shadow-[var(--shadow-glow)] no-underline"
-                >
-                  {/* Image Placeholder / Gradient */}
-                  <div className="relative aspect-[4/3] overflow-hidden">
-                    <div
-                      className="absolute inset-0 transition-transform duration-700 group-hover:scale-105"
-                      style={{
-                        background: getVenueGradient(index),
-                      }}
-                    />
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-bg-surface via-transparent to-transparent" />
-
-                    {/* Price Badge */}
-                    {venue.priceFrom && (
-                      <div className="absolute top-4 right-4 rounded-full bg-bg/80 px-3 py-1 text-xs font-medium text-gold backdrop-blur-sm border border-border-gold">
-                        From {formatPrice(venue.priceFrom)}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-6">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <h3 className="font-display text-xl font-medium text-text-primary group-hover:text-gold transition-colors duration-300">
-                          {venue.name}
-                        </h3>
-                        <p className="mt-1 text-sm text-gold/80">
-                          {provider?.brandName}
-                        </p>
-                      </div>
-                      <ArrowUpRight className="h-5 w-5 text-text-muted transition-all duration-300 group-hover:text-gold group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                    </div>
-
-                    <p className="mt-3 line-clamp-2 text-sm text-text-secondary">
-                      {venue.shortDescription}
-                    </p>
-
-                    {/* Meta */}
-                    <div className="mt-4 flex items-center gap-4 text-xs text-text-muted">
-                      <span className="flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
-                        {venue.city}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Users className="h-3 w-3" />
-                        {venue.capacityMin}–{venue.capacityMax} guests
-                      </span>
-                    </div>
-
-                    {/* Event Tags */}
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {venue.eventTypes.slice(0, 3).map((type) => (
-                        <span
-                          key={type}
-                          className="rounded-full bg-bg-elevated px-2.5 py-1 text-xs text-text-muted"
-                        >
-                          {type}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </Link>
-              </ScrollReveal>
-            );
-          })}
-        </div>
-
-        {/* View All CTA */}
-        <ScrollReveal delay={0.4}>
-          <div className="mt-12 text-center">
-            <Link
-              href="/venues"
-              className="inline-flex items-center gap-2 rounded-full border border-border-gold px-8 py-3 text-sm font-medium uppercase tracking-wider text-gold transition-all duration-300 hover:bg-gold hover:text-bg no-underline"
-            >
-              View All Venues
-              <ArrowUpRight className="h-4 w-4" />
-            </Link>
-          </div>
-        </ScrollReveal>
       </div>
+
+      {/* Carousel Container */}
+      {prefersReducedMotion ? (
+        // Fallback Grid for Reduced Motion
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {featuredVenues.map((venue, i) => (
+              <ScrollReveal key={venue.id} delay={i * 0.1}>
+                <VenueCardNode venue={venue} index={i} />
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Mobile: Horizontal Snap Scroll */}
+          <div className="md:hidden flex overflow-x-auto snap-x snap-mandatory gap-6 px-6 pb-8 hide-scrollbar">
+            {featuredVenues.map((venue, i) => (
+              <VenueCardNode key={`mobile-${i}`} venue={venue} index={i} />
+            ))}
+          </div>
+
+          {/* Desktop: 3D Cylinder Carousel */}
+          <div
+            className="hidden md:flex justify-center items-center h-[550px]"
+            style={{ perspective: "1500px" }}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            <div
+              ref={cylinderRef}
+              className="relative w-full h-full"
+              style={{ transformStyle: "preserve-3d", transform: "translateZ(-600px)" }}
+            >
+              {carouselItems.map((venue, i) => (
+                <VenueCardNode key={`3d-${i}`} venue={venue} index={i} is3D={true} />
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* View All CTA */}
+      <ScrollReveal delay={0.4}>
+        <div className="mt-12 text-center relative z-10">
+          <Link
+            href="/venues"
+            className="inline-flex items-center gap-2 rounded-full border border-border-gold px-8 py-3 text-sm font-medium uppercase tracking-wider text-gold transition-all duration-300 hover:bg-gold hover:text-bg no-underline"
+          >
+            View All Venues
+            <ArrowUpRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </ScrollReveal>
     </section>
   );
 }
