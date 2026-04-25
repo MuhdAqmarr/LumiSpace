@@ -60,13 +60,13 @@ export default function VideoHero() {
             <MagneticButton strength={15}>
               <Link
                 href="/venues"
-                className="group relative flex overflow-hidden rounded-full p-[2px] no-underline transition-all duration-300 hover:shadow-[var(--shadow-glow)]"
+                className="group relative flex items-center gap-2 overflow-hidden rounded-full bg-gold px-8 py-4 text-sm font-semibold uppercase tracking-wider text-bg no-underline transition-all duration-300 hover:bg-gold-light hover:shadow-[var(--shadow-glow)]"
               >
-                <div className="absolute -inset-[100%] z-0 animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0_300deg,#ffffff_360deg)] opacity-40" />
-                <div className="relative z-10 flex w-full items-center justify-center gap-2 rounded-full bg-gold px-8 py-4 text-sm font-semibold uppercase tracking-wider text-bg transition-colors duration-300 group-hover:bg-gold-light">
+                <div className="absolute inset-0 z-0 animate-[shimmer_3s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                <span className="relative z-10 flex items-center gap-2">
                   Find a Venue
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                </div>
+                </span>
               </Link>
             </MagneticButton>
             <MagneticButton strength={10}>

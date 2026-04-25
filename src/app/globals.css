@@ -253,3 +253,8 @@
   --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
 }
+
+@keyframes shimmer {
+  0% { transform: translateX(-200%) skewX(-20deg); }
+  100% { transform: translateX(200%) skewX(-20deg); }
+}
