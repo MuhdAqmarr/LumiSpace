@@ -25,6 +25,7 @@ export default function CustomSelect({
   placeholder = "Select an option",
   icon,
   className = "",
+  error,
 }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
