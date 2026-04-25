@@ -11,6 +11,8 @@ import Footer from "@/components/layout/Footer";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import CustomSelect from "@/components/ui/CustomSelect";
+import CustomDatePicker from "@/components/ui/CustomDatePicker";
+import CustomTimePicker from "@/components/ui/CustomTimePicker";
 import { useToast } from "@/components/ui/Toast";
 import { getVenueBySlug } from "@/lib/services/venue-service";
 import { getProviderById } from "@/lib/services/provider-service";
@@ -156,40 +158,34 @@ export default function BookingPage() {
 
                     <div className="md:col-span-2">
                       <label className="block text-sm font-medium text-text-secondary mb-2">Event Date *</label>
-                      <div className="relative">
-                        <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
-                        <input 
-                          type="date"
-                          {...register("eventDate")}
-                          className={`w-full bg-bg-surface border ${errors.eventDate ? 'border-danger' : 'border-border'} rounded-xl pl-12 pr-4 py-3 text-text-primary outline-none focus:border-gold transition-colors [color-scheme:dark]`}
-                        />
-                      </div>
+                      <CustomDatePicker
+                        value={watch("eventDate") || ""}
+                        onChange={(val) => setValue("eventDate", val, { shouldValidate: true })}
+                        error={!!errors.eventDate}
+                        placeholder="Select event date"
+                      />
                       {errors.eventDate && <p className="mt-1 text-xs text-danger">{errors.eventDate.message}</p>}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-text-secondary mb-2">Start Time *</label>
-                      <div className="relative">
-                        <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
-                        <input 
-                          type="time"
-                          {...register("startTime")}
-                          className={`w-full bg-bg-surface border ${errors.startTime ? 'border-danger' : 'border-border'} rounded-xl pl-12 pr-4 py-3 text-text-primary outline-none focus:border-gold transition-colors [color-scheme:dark]`}
-                        />
-                      </div>
+                      <CustomTimePicker
+                        value={watch("startTime") || ""}
+                        onChange={(val) => setValue("startTime", val, { shouldValidate: true })}
+                        error={!!errors.startTime}
+                        placeholder="Select start time"
+                      />
                       {errors.startTime && <p className="mt-1 text-xs text-danger">{errors.startTime.message}</p>}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-text-secondary mb-2">End Time *</label>
-                      <div className="relative">
-                        <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
-                        <input 
-                          type="time"
-                          {...register("endTime")}
-                          className={`w-full bg-bg-surface border ${errors.endTime ? 'border-danger' : 'border-border'} rounded-xl pl-12 pr-4 py-3 text-text-primary outline-none focus:border-gold transition-colors [color-scheme:dark]`}
-                        />
-                      </div>
+                      <CustomTimePicker
+                        value={watch("endTime") || ""}
+                        onChange={(val) => setValue("endTime", val, { shouldValidate: true })}
+                        error={!!errors.endTime}
+                        placeholder="Select end time"
+                      />
                       {errors.endTime && <p className="mt-1 text-xs text-danger">{errors.endTime.message}</p>}
                     </div>
                   </div>

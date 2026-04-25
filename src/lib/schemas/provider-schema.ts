@@ -27,7 +27,9 @@ export const providerRegistrationSchema = z.object({
 
   contactPhone: z
     .string()
-    .min(8, "Phone number must be at least 8 characters"),
+    .min(8, "Phone number must be at least 8 characters")
+    .max(20, "Phone number must be under 20 characters")
+    .regex(/^\+?[0-9\s\-()]+$/, "Please enter a valid phone number (e.g. +60123456789)"),
 
   address: z
     .string()

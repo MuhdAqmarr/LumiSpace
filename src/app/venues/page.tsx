@@ -60,7 +60,7 @@ function VenueListingContent() {
             </p>
 
             {/* Filter Bar */}
-            <div className="mt-8 glass rounded-2xl border border-border p-2">
+            <div className="mt-8 glass rounded-2xl border border-border p-2 relative z-50">
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-4">
                 <input
                   type="text"
