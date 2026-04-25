@@ -17,7 +17,7 @@ export default function CinematicNavbar() {
   }, []);
 
   const navLinks = [
-    { href: "/venues", label: "Venues" },
+    { href: "/providers", label: "Providers" },
     { href: "/become-a-provider", label: "List Your Venue" },
     { href: "/admin/login", label: "Provider Login" },
   ];
