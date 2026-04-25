@@ -1,0 +1,136 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Building2, CalendarDays, CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import { getCurrentUser, getProviderIdForUser } from "@/lib/services/auth-service";
+import { getProviderStats, getBookingsByProviderId } from "@/lib/services/booking-service";
+import { Booking } from "@/lib/types";
+
+export default function AdminDashboardPage() {
+  const [stats, setStats] = useState({ pending: 0, approved: 0, rejected: 0, total: 0, thisMonth: 0 });
+  const [recentBookings, setRecentBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const user = getCurrentUser();
+    if (user) {
+      const providerId = getProviderIdForUser(user.id);
+      if (providerId) {
+        setStats(getProviderStats(providerId));
+        
+        // Get recent bookings
+        const allBookings = getBookingsByProviderId(providerId);
+        // Sort by createdAt descending
+        allBookings.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        setRecentBookings(allBookings.slice(0, 5));
+      }
+    }
+    setLoading(false);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-2 border-gold border-t-transparent animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-6xl">
+      <div className="mb-10">
+        <h1 className="font-display text-4xl text-text-primary mb-2">Dashboard Overview</h1>
+        <p className="text-text-secondary">Welcome back. Here&apos;s what&apos;s happening with your venues today.</p>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div className="glass-strong p-6 rounded-2xl border border-border">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-medium text-text-secondary">Pending Requests</h3>
+            <div className="w-8 h-8 rounded-full bg-warning/10 text-warning flex items-center justify-center">
+              <Clock className="w-4 h-4" />
+            </div>
+          </div>
+          <p className="font-display text-4xl text-text-primary">{stats.pending}</p>
+        </div>
+
+        <div className="glass-strong p-6 rounded-2xl border border-border">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-medium text-text-secondary">Approved Events</h3>
+            <div className="w-8 h-8 rounded-full bg-success/10 text-success flex items-center justify-center">
+              <CheckCircle2 className="w-4 h-4" />
+            </div>
+          </div>
+          <p className="font-display text-4xl text-text-primary">{stats.approved}</p>
+        </div>
+
+        <div className="glass-strong p-6 rounded-2xl border border-border">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-medium text-text-secondary">Total Bookings</h3>
+            <div className="w-8 h-8 rounded-full bg-gold/10 text-gold flex items-center justify-center">
+              <CalendarDays className="w-4 h-4" />
+            </div>
+          </div>
+          <p className="font-display text-4xl text-text-primary">{stats.total}</p>
+        </div>
+
+        <div className="glass-strong p-6 rounded-2xl border border-border">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-medium text-text-secondary">New This Month</h3>
+            <div className="w-8 h-8 rounded-full bg-gold/10 text-gold flex items-center justify-center">
+              <Building2 className="w-4 h-4" />
+            </div>
+          </div>
+          <p className="font-display text-4xl text-text-primary">{stats.thisMonth}</p>
+        </div>
+      </div>
+
+      {/* Recent Bookings */}
+      <div className="glass-strong rounded-2xl border border-border overflow-hidden">
+        <div className="p-6 border-b border-border flex items-center justify-between">
+          <h2 className="font-display text-2xl text-text-primary">Recent Booking Requests</h2>
+          <Link href="/admin/bookings" className="text-sm text-gold hover:underline">
+            View All
+          </Link>
+        </div>
+        
+        {recentBookings.length > 0 ? (
+          <div className="divide-y divide-border">
+            {recentBookings.map((booking) => (
+              <div key={booking.id} className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-bg-elevated/50 transition-colors">
+                <div>
+                  <div className="flex items-center gap-3 mb-1">
+                    <span className="font-mono text-sm text-text-primary">{booking.bookingCode}</span>
+                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                      booking.status === 'approved' ? 'bg-success/10 text-success border-success/20' :
+                      booking.status === 'rejected' ? 'bg-danger/10 text-danger border-danger/20' :
+                      'bg-warning/10 text-warning border-warning/20'
+                    }`}>
+                      {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                    </span>
+                  </div>
+                  <p className="text-sm text-text-secondary">
+                    <span className="text-text-primary">{booking.customerName}</span> requests to book for <span className="text-text-primary">{booking.eventDate}</span>
+                  </p>
+                </div>
+                <Link 
+                  href={`/admin/bookings/${booking.id}`}
+                  className="shrink-0 px-4 py-2 border border-border-gold rounded-lg text-sm text-gold hover:bg-gold hover:text-bg transition-colors text-center"
+                >
+                  Review Details
+                </Link>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="p-12 text-center flex flex-col items-center">
+            <AlertCircle className="w-8 h-8 text-text-muted mb-3" />
+            <p className="text-text-secondary">No booking requests found.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
