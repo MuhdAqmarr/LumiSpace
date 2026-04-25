@@ -68,9 +68,9 @@ export default function FeaturedProviders() {
                     {/* Hero Gradient */}
                     <div className="relative aspect-[16/9] overflow-hidden shrink-0">
                       <div
-                        className="absolute inset-0 transition-transform duration-700 group-hover:scale-105"
+                        className="absolute inset-0 transition-transform duration-700 group-hover:scale-105 bg-cover bg-center"
                         style={{
-                          background: getProviderGradient(index),
+                          backgroundImage: `url('${provider.heroImageUrl || "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000&auto=format&fit=crop"}')`,
                         }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-bg-surface via-bg-surface/30 to-transparent" />

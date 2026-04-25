@@ -64,12 +64,12 @@ export default function FeaturedVenueGrid() {
           backfaceVisibility: "hidden", // Hide back sides for a cleaner look
         } : {}}
       >
-        {/* Image Placeholder / Gradient */}
+        {/* Venue Image */}
         <div className="relative aspect-[4/3] overflow-hidden">
           <div
-            className="absolute inset-0 transition-transform duration-700 group-hover:scale-105"
+            className="absolute inset-0 transition-transform duration-700 group-hover:scale-105 bg-cover bg-center"
             style={{
-              background: getVenueGradient(index),
+              backgroundImage: `url('${venue.heroImageUrl || "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000&auto=format&fit=crop"}')`,
             }}
           />
           {/* Overlay */}

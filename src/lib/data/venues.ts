@@ -123,7 +123,7 @@ export const venues: Venue[] = [
     city: "Petaling Jaya",
     country: "Malaysia",
     priceFrom: 10000,
-    heroImageUrl: "https://images.unsplash.com/photo-1533106497176-45ae19e68ba2?q=80&w=2000&auto=format&fit=crop",
+    heroImageUrl: "https://unsplash.com/photos/a-group-of-people-standing-under-a-tent-at-night-PF4Y7N86EzI",
     heroVideoUrl: undefined,
     galleryUrls: [],
     amenities: [
