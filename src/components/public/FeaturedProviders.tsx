@@ -21,7 +21,7 @@ export default function FeaturedProviders() {
             </span>
           </ScrollReveal>
           <SplitTextReveal
-            text="Meet the providers"
+            text="Meet the top providers"
             as="h2"
             className="mt-4 font-display text-4xl font-medium text-text-primary md:text-5xl lg:text-6xl"
             delay={0.2}
@@ -42,10 +42,14 @@ export default function FeaturedProviders() {
             ).length;
 
             return (
-              <ScrollReveal key={provider.id} delay={index * 0.15} distance={50}>
+              <ScrollReveal key={provider.id} delay={index * 0.15} distance={50} className={index === 1 ? "md:z-10" : "md:z-0"}>
                 <Link
                   href={`/p/${provider.slug}`}
-                  className="group relative block overflow-hidden rounded-2xl p-[1px] transition-all duration-500 hover:shadow-[0_0_40px_var(--glow-color)] no-underline"
+                  className={`group relative block overflow-hidden rounded-2xl p-[1px] transition-all duration-500 hover:shadow-[0_0_40px_var(--glow-color)] no-underline ${
+                    index === 1 
+                      ? "md:scale-105 md:shadow-[0_0_40px_var(--glow-color)]" 
+                      : "md:scale-95 md:opacity-80 md:hover:scale-100 md:hover:opacity-100"
+                  }`}
                   style={{ "--glow-color": `${provider.themeJson?.accentColor || '#C8A96A'}22` } as React.CSSProperties}
                 >
                   {/* Animated Shine Border */}
