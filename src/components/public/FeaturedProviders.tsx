@@ -21,7 +21,7 @@ export default function FeaturedProviders() {
             </span>
           </ScrollReveal>
           <SplitTextReveal
-            text="Meet the venues"
+            text="Meet the providers"
             as="h2"
             className="mt-4 font-display text-4xl font-medium text-text-primary md:text-5xl lg:text-6xl"
             delay={0.2}
