@@ -10,6 +10,7 @@ import Footer from "@/components/layout/Footer";
 import { createProvider } from "@/lib/services/provider-service";
 import { createVenue } from "@/lib/services/venue-service";
 import CustomSelect from "@/components/ui/CustomSelect";
+import CustomNumberInput from "@/components/ui/CustomNumberInput";
 import { providerRegistrationSchema, ProviderRegistrationFormValues } from "@/lib/schemas/provider-schema";
 
 export default function BecomeProviderPage() {
@@ -291,33 +292,42 @@ export default function BecomeProviderPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-text-secondary mb-2">Minimum Capacity *</label>
-                    <input 
-                      type="number"
-                      {...register("capacityMin", { valueAsNumber: true })}
+                    <CustomNumberInput
+                      value={watch("capacityMin")}
+                      onChange={(val) => setValue("capacityMin", val, { shouldValidate: true })}
+                      min={1}
+                      max={10000}
+                      error={!!errors.capacityMin}
                       placeholder="e.g. 50"
-                      className={`w-full bg-bg border ${errors.capacityMin ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
+                      className="!bg-bg"
                     />
                     {errors.capacityMin && <p className="mt-1 text-xs text-danger">{errors.capacityMin.message}</p>}
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-text-secondary mb-2">Maximum Capacity *</label>
-                    <input 
-                      type="number"
-                      {...register("capacityMax", { valueAsNumber: true })}
+                    <CustomNumberInput
+                      value={watch("capacityMax")}
+                      onChange={(val) => setValue("capacityMax", val, { shouldValidate: true })}
+                      min={1}
+                      max={100000}
+                      error={!!errors.capacityMax}
                       placeholder="e.g. 500"
-                      className={`w-full bg-bg border ${errors.capacityMax ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
+                      className="!bg-bg"
                     />
                     {errors.capacityMax && <p className="mt-1 text-xs text-danger">{errors.capacityMax.message}</p>}
                   </div>
 
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-text-secondary mb-2">Starting Price (RM) *</label>
-                    <input 
-                      type="number"
-                      {...register("priceFrom", { valueAsNumber: true })}
+                    <CustomNumberInput
+                      value={watch("priceFrom")}
+                      onChange={(val) => setValue("priceFrom", val, { shouldValidate: true })}
+                      min={1}
+                      max={1000000}
+                      error={!!errors.priceFrom}
                       placeholder="e.g. 15000"
-                      className={`w-full bg-bg border ${errors.priceFrom ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
+                      className="!bg-bg"
                     />
                     {errors.priceFrom && <p className="mt-1 text-xs text-danger">{errors.priceFrom.message}</p>}
                   </div>

@@ -13,6 +13,7 @@ import ErrorState from "@/components/ui/ErrorState";
 import CustomSelect from "@/components/ui/CustomSelect";
 import CustomDatePicker from "@/components/ui/CustomDatePicker";
 import CustomTimePicker from "@/components/ui/CustomTimePicker";
+import CustomNumberInput from "@/components/ui/CustomNumberInput";
 import { useToast } from "@/components/ui/Toast";
 import { getVenueBySlug } from "@/lib/services/venue-service";
 import { getProviderById } from "@/lib/services/provider-service";
@@ -147,11 +148,13 @@ export default function BookingPage() {
 
                     <div>
                       <label className="block text-sm font-medium text-text-secondary mb-2">Guest Count *</label>
-                      <input 
-                        type="number"
-                        {...register("guestCount", { valueAsNumber: true })}
+                      <CustomNumberInput
+                        value={watch("guestCount")}
+                        onChange={(val) => setValue("guestCount", val, { shouldValidate: true })}
+                        min={venue.capacityMin}
+                        max={venue.capacityMax}
+                        error={!!errors.guestCount}
                         placeholder={`Capacity: ${venue.capacityMin} - ${venue.capacityMax}`}
-                        className={`w-full bg-bg-surface border ${errors.guestCount ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
                       />
                       {errors.guestCount && <p className="mt-1 text-xs text-danger">{errors.guestCount.message}</p>}
                     </div>
