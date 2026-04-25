@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, Calendar, Clock, Users, Building2, MapPin, CheckCircle2 } from "lucide-react";
@@ -308,7 +309,16 @@ export default function BookingPage() {
                 
                 <div className="flex gap-4 mb-6 pb-6 border-b border-border">
                   <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0 relative bg-bg-surface border border-border">
-                    <div className="absolute inset-0 bg-gradient-to-br from-gold/20 to-transparent" />
+                    {venue.images && venue.images[0] ? (
+                      <Image 
+                        src={venue.images[0]} 
+                        alt={venue.name} 
+                        fill 
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-gold/20 to-transparent" />
+                    )}
                   </div>
                   <div>
                     <h4 className="font-medium text-text-primary">{venue.name}</h4>
