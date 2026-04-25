@@ -16,6 +16,44 @@ const TOTAL_ITEMS = 12; // 6 venues duplicated
 const ANGLE_STEP = 360 / TOTAL_ITEMS;
 const RADIUS = 650; // Increased radius to add space between cards
 
+function StarryBackground() {
+  const [stars, setStars] = useState<{ id: number; x: number; y: number; size: number; delay: number; duration: number }[]>([]);
+
+  useEffect(() => {
+    // Generate random stars only on client to avoid hydration mismatch
+    const generatedStars = Array.from({ length: 60 }).map((_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 2 + 1,
+      delay: Math.random() * 5,
+      duration: Math.random() * 3 + 2,
+    }));
+    setStars(generatedStars);
+  }, []);
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 opacity-60">
+      {stars.map((star) => (
+        <div
+          key={star.id}
+          className="absolute bg-gold animate-twinkle"
+          style={{
+            left: `${star.x}%`,
+            top: `${star.y}%`,
+            width: `${star.size}px`,
+            height: `${star.size}px`,
+            animationDelay: `${star.delay}s`,
+            animationDuration: `${star.duration}s`,
+            borderRadius: '50%',
+            boxShadow: `0 0 ${star.size * 2}px var(--color-gold)`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function FeaturedVenueGrid() {
   const { prefersReducedMotion } = useGsap();
   const cylinderRef = useRef<HTMLDivElement>(null);
@@ -131,6 +169,7 @@ export default function FeaturedVenueGrid() {
 
   return (
     <section className="relative py-24 lg:py-32 overflow-hidden">
+      <StarryBackground />
       {/* Background ambient lighting for the carousel */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-gold/5 blur-[120px] rounded-full pointer-events-none hidden md:block" />
 
