@@ -10,6 +10,7 @@ import CinematicNavbar from "@/components/layout/CinematicNavbar";
 import Footer from "@/components/layout/Footer";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
+import CustomSelect from "@/components/ui/CustomSelect";
 import { useToast } from "@/components/ui/Toast";
 import { getVenueBySlug } from "@/lib/services/venue-service";
 import { getProviderById } from "@/lib/services/provider-service";
@@ -128,16 +129,17 @@ export default function BookingPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-text-secondary mb-2">Event Type *</label>
-                      <select 
-                        {...register("eventType")}
-                        className={`w-full bg-bg-surface border ${errors.eventType ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
-                      >
-                        <option value="">Select event type...</option>
-                        {venue.eventTypes.map(type => (
-                          <option key={type} value={type}>{type}</option>
-                        ))}
-                        <option value="Other">Other</option>
-                      </select>
+                      <CustomSelect
+                        options={[
+                          { value: "", label: "Select event type..." },
+                          ...venue.eventTypes.map(type => ({ value: type, label: type })),
+                          { value: "Other", label: "Other" }
+                        ]}
+                        value={watch("eventType") || ""}
+                        onChange={(val) => setValue("eventType", val as any, { shouldValidate: true })}
+                        error={!!errors.eventType}
+                        placeholder="Select event type..."
+                      />
                       {errors.eventType && <p className="mt-1 text-xs text-danger">{errors.eventType.message}</p>}
                     </div>
 

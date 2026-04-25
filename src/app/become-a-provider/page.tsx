@@ -9,6 +9,7 @@ import CinematicNavbar from "@/components/layout/CinematicNavbar";
 import Footer from "@/components/layout/Footer";
 import { createProvider } from "@/lib/services/provider-service";
 import { createVenue } from "@/lib/services/venue-service";
+import CustomSelect from "@/components/ui/CustomSelect";
 import { providerRegistrationSchema, ProviderRegistrationFormValues } from "@/lib/schemas/provider-schema";
 
 export default function BecomeProviderPage() {
@@ -18,6 +19,8 @@ export default function BecomeProviderPage() {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<ProviderRegistrationFormValues>({
     resolver: zodResolver(providerRegistrationSchema),
@@ -217,17 +220,20 @@ export default function BecomeProviderPage() {
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <select 
-                          {...register("city")}
-                          className={`w-full bg-bg border ${errors.city ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
-                        >
-                          <option value="">Select City...</option>
-                          <option value="Kuala Lumpur">Kuala Lumpur</option>
-                          <option value="Petaling Jaya">Petaling Jaya</option>
-                          <option value="Shah Alam">Shah Alam</option>
-                          <option value="Penang">Penang</option>
-                          <option value="Johor Bahru">Johor Bahru</option>
-                        </select>
+                        <CustomSelect
+                          options={[
+                            { value: "", label: "Select City..." },
+                            { value: "Kuala Lumpur", label: "Kuala Lumpur" },
+                            { value: "Petaling Jaya", label: "Petaling Jaya" },
+                            { value: "Shah Alam", label: "Shah Alam" },
+                            { value: "Penang", label: "Penang" },
+                            { value: "Johor Bahru", label: "Johor Bahru" },
+                          ]}
+                          value={watch("city")}
+                          onChange={(val) => setValue("city", val, { shouldValidate: true })}
+                          error={!!errors.city}
+                          placeholder="Select City..."
+                        />
                         {errors.city && <p className="mt-1 text-xs text-danger">{errors.city.message}</p>}
                       </div>
                       <div>
@@ -264,19 +270,22 @@ export default function BecomeProviderPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-text-secondary mb-2">Venue Type *</label>
-                    <select 
-                      {...register("firstVenueType")}
-                      className={`w-full bg-bg border ${errors.firstVenueType ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
-                    >
-                      <option value="">Select type...</option>
-                      <option value="Ballroom">Ballroom</option>
-                      <option value="Rooftop">Rooftop</option>
-                      <option value="Garden">Garden</option>
-                      <option value="Loft Hall">Loft Hall</option>
-                      <option value="Pavilion">Pavilion</option>
-                      <option value="Seminar Room">Seminar Room</option>
-                      <option value="Other">Other</option>
-                    </select>
+                    <CustomSelect
+                      options={[
+                        { value: "", label: "Select type..." },
+                        { value: "Ballroom", label: "Ballroom" },
+                        { value: "Rooftop", label: "Rooftop" },
+                        { value: "Garden", label: "Garden" },
+                        { value: "Loft Hall", label: "Loft Hall" },
+                        { value: "Pavilion", label: "Pavilion" },
+                        { value: "Seminar Room", label: "Seminar Room" },
+                        { value: "Other", label: "Other" },
+                      ]}
+                      value={watch("firstVenueType")}
+                      onChange={(val) => setValue("firstVenueType", val, { shouldValidate: true })}
+                      error={!!errors.firstVenueType}
+                      placeholder="Select type..."
+                    />
                     {errors.firstVenueType && <p className="mt-1 text-xs text-danger">{errors.firstVenueType.message}</p>}
                   </div>
 

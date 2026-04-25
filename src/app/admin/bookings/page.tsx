@@ -7,6 +7,7 @@ import { getCurrentUser, getProviderIdForUser } from "@/lib/services/auth-servic
 import { getBookingsByProviderId } from "@/lib/services/booking-service";
 import { getVenuesByProviderId } from "@/lib/services/venue-service";
 import { Booking, Venue } from "@/lib/types";
+import CustomSelect from "@/components/ui/CustomSelect";
 
 export default function AdminBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -73,18 +74,21 @@ export default function AdminBookingsPage() {
             className="w-full bg-bg-surface border border-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-text-primary outline-none focus:border-gold transition-colors"
           />
         </div>
-        <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-text-muted shrink-0" />
-          <select 
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="bg-bg-surface border border-border rounded-xl px-4 py-2.5 text-sm text-text-primary outline-none focus:border-gold transition-colors min-w-[150px]"
-          >
-            <option value="all">All Statuses</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-          </select>
+        <div className="flex items-center gap-2 w-full md:w-auto">
+          <Filter className="w-4 h-4 text-text-muted shrink-0 hidden md:block" />
+          <div className="w-full md:w-[180px]">
+            <CustomSelect
+              options={[
+                { value: "all", label: "All Statuses" },
+                { value: "pending", label: "Pending" },
+                { value: "approved", label: "Approved" },
+                { value: "rejected", label: "Rejected" },
+              ]}
+              value={filterStatus}
+              onChange={setFilterStatus}
+              placeholder="Filter Status"
+            />
+          </div>
         </div>
       </div>
 
