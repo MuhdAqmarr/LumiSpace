@@ -38,7 +38,7 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="max-w-6xl">
+    <div>
       <div className="mb-10">
         <h1 className="font-display text-4xl text-text-primary mb-2">Dashboard Overview</h1>
         <p className="text-text-secondary">Welcome back. Here&apos;s what&apos;s happening with your venues today.</p>

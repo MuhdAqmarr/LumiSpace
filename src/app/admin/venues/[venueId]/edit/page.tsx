@@ -83,7 +83,7 @@ export default function EditVenuePage() {
   }
 
   return (
-    <div className="max-w-3xl">
+    <div>
       <div className="flex items-center gap-4 mb-10">
         <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gold/10 border border-gold/30">
           <Edit className="w-6 h-6 text-gold" />
