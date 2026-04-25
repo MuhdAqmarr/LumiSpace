@@ -45,52 +45,71 @@ export default function FeaturedProviders() {
               <ScrollReveal key={provider.id} delay={index * 0.15} distance={50}>
                 <Link
                   href={`/p/${provider.slug}`}
-                  className="group relative block overflow-hidden rounded-2xl border border-border bg-bg-surface transition-all duration-500 hover:border-border-gold hover:shadow-[var(--shadow-glow)] no-underline"
+                  className="group relative block overflow-hidden rounded-2xl p-[1px] transition-all duration-500 hover:shadow-[0_0_40px_var(--glow-color)] no-underline"
+                  style={{ "--glow-color": `${provider.themeJson?.accentColor || '#C8A96A'}22` } as React.CSSProperties}
                 >
-                  {/* Hero Gradient */}
-                  <div className="relative aspect-[16/9] overflow-hidden">
-                    <div
-                      className="absolute inset-0 transition-transform duration-700 group-hover:scale-105"
-                      style={{
-                        background: getProviderGradient(index),
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-bg-surface via-bg-surface/30 to-transparent" />
+                  {/* Animated Shine Border */}
+                  <div 
+                    className="absolute -inset-[100%] z-0 animate-[spin_6s_linear_infinite] opacity-30 transition-opacity duration-500 group-hover:opacity-100" 
+                    style={{
+                      background: `conic-gradient(from 0deg, transparent 0 280deg, ${provider.themeJson?.accentColor || '#C8A96A'} 360deg)`
+                    }}
+                  />
 
-                    {/* Provider WebGL Preset Badge */}
-                    <div className="absolute top-4 left-4 rounded-full bg-bg/60 px-3 py-1 text-xs font-medium backdrop-blur-sm"
-                      style={{ color: provider.themeJson?.accentColor || '#C8A96A' }}
-                    >
-                      {provider.themeJson?.webglPreset === "gold"
-                        ? "✦ Gold Luxury"
-                        : provider.themeJson?.webglPreset === "neon"
-                          ? "◈ Industrial Neon"
-                          : "❀ Garden Estate"}
+                  {/* Static Default Border */}
+                  <div className="absolute inset-0 z-0 rounded-2xl border border-border transition-colors duration-500" />
+
+                  {/* Inner Card Container */}
+                  <div className="relative z-10 flex h-full w-full flex-col overflow-hidden rounded-[15px] bg-bg-surface">
+                    {/* Hero Gradient */}
+                    <div className="relative aspect-[16/9] overflow-hidden shrink-0">
+                      <div
+                        className="absolute inset-0 transition-transform duration-700 group-hover:scale-105"
+                        style={{
+                          background: getProviderGradient(index),
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-bg-surface via-bg-surface/30 to-transparent" />
+
+                      {/* Provider WebGL Preset Badge */}
+                      <div className="absolute top-4 left-4 rounded-full bg-bg/60 px-3 py-1 text-xs font-medium backdrop-blur-sm"
+                        style={{ color: provider.themeJson?.accentColor || '#C8A96A' }}
+                      >
+                        {provider.themeJson?.webglPreset === "gold"
+                          ? "✦ Gold Luxury"
+                          : provider.themeJson?.webglPreset === "neon"
+                            ? "◈ Industrial Neon"
+                            : "❀ Garden Estate"}
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Content */}
-                  <div className="p-6">
-                    <div className="flex items-start justify-between gap-2">
-                      <h3 className="font-display text-xl font-medium text-text-primary group-hover:text-gold transition-colors duration-300">
-                        {provider.brandName}
-                      </h3>
-                      <ArrowUpRight className="h-5 w-5 text-text-muted transition-all duration-300 group-hover:text-gold group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                    </div>
+                    {/* Content */}
+                    <div className="flex flex-col flex-1 p-6">
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="font-display text-xl font-medium text-text-primary transition-colors duration-300"
+                          style={{ color: "var(--text-primary)" }}
+                        >
+                          {provider.brandName}
+                        </h3>
+                        <ArrowUpRight className="h-5 w-5 text-text-muted transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" 
+                          style={{ color: provider.themeJson?.accentColor || '#C8A96A' }}
+                        />
+                      </div>
 
-                    <p className="mt-2 text-sm italic text-text-secondary">
-                      &ldquo;{provider.tagline}&rdquo;
-                    </p>
+                      <p className="mt-2 text-sm italic text-text-secondary flex-1">
+                        &ldquo;{provider.tagline}&rdquo;
+                      </p>
 
-                    <div className="mt-4 flex items-center gap-4 text-xs text-text-muted">
-                      <span className="flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
-                        {provider.city}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Building2 className="h-3 w-3" />
-                        {venueCount} {venueCount === 1 ? "venue" : "venues"}
-                      </span>
+                      <div className="mt-5 flex items-center gap-4 text-xs text-text-muted">
+                        <span className="flex items-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          {provider.city}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Building2 className="h-3 w-3" />
+                          {venueCount} {venueCount === 1 ? "venue" : "venues"}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </Link>
