@@ -14,7 +14,7 @@ import { useGsap } from "@/components/motion/GsapProvider";
 // Desktop 3D settings
 const TOTAL_ITEMS = 12; // 6 venues duplicated
 const ANGLE_STEP = 360 / TOTAL_ITEMS;
-const RADIUS = 800; // Increased radius to add space between cards
+const RADIUS = 650; // Increased radius to add space between cards
 
 export default function FeaturedVenueGrid() {
   const { prefersReducedMotion } = useGsap();

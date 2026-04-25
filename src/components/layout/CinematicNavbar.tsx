@@ -55,9 +55,13 @@ export default function CinematicNavbar() {
           ))}
           <Link
             href="/venues"
-            className="rounded-full border border-gold px-6 py-2.5 text-sm font-medium tracking-wider uppercase text-gold transition-all duration-300 hover:bg-gold hover:text-bg no-underline"
+            className="group relative overflow-hidden rounded-full p-[1px] no-underline"
           >
-            Find a Venue
+            <div className="absolute -inset-[100%] z-0 animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(200,169,106,1)_360deg)] opacity-70" />
+            <div className="absolute inset-0 z-0 rounded-full border border-gold/30" />
+            <div className="relative z-10 flex h-full w-full items-center justify-center rounded-full bg-bg px-6 py-2.5 text-sm font-medium tracking-wider uppercase text-gold transition-colors duration-300 group-hover:bg-gold group-hover:text-bg">
+              Find a Venue
+            </div>
           </Link>
         </div>
 
