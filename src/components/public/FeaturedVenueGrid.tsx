@@ -14,7 +14,7 @@ import { useGsap } from "@/components/motion/GsapProvider";
 // Desktop 3D settings
 const TOTAL_ITEMS = 12; // 6 venues duplicated
 const ANGLE_STEP = 360 / TOTAL_ITEMS;
-const RADIUS = 600; // Calculated based on 320px width
+const RADIUS = 800; // Increased radius to add space between cards
 
 export default function FeaturedVenueGrid() {
   const { prefersReducedMotion } = useGsap();
@@ -188,7 +188,7 @@ export default function FeaturedVenueGrid() {
             <div
               ref={cylinderRef}
               className="relative w-full h-full"
-              style={{ transformStyle: "preserve-3d", transform: "translateZ(-600px)" }}
+              style={{ transformStyle: "preserve-3d", transform: "translateZ(-800px)" }}
             >
               {carouselItems.map((venue, i) => (
                 <VenueCardNode key={`3d-${i}`} venue={venue} index={i} is3D={true} />
