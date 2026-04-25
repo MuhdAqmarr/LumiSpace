@@ -309,9 +309,9 @@ export default function BookingPage() {
                 
                 <div className="flex gap-4 mb-6 pb-6 border-b border-border">
                   <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0 relative bg-bg-surface border border-border">
-                    {venue.images && venue.images[0] ? (
+                    {venue.heroImageUrl || (venue.galleryUrls && venue.galleryUrls[0]) ? (
                       <Image 
-                        src={venue.images[0]} 
+                        src={venue.heroImageUrl || venue.galleryUrls[0]} 
                         alt={venue.name} 
                         fill 
                         className="object-cover"
