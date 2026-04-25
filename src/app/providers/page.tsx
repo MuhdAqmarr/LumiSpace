@@ -106,7 +106,7 @@ export default function ProvidersPage() {
         </section>
 
         {/* Provider Grid */}
-        <section className="pb-24 mx-auto max-w-7xl px-6 lg:px-8">
+        <section className="pt-12 pb-24 mx-auto max-w-7xl px-6 lg:px-8">
 
           {loading ? (
             <LoadingState message="Loading providers…" />
