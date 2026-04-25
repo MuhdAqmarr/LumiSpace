@@ -10,8 +10,19 @@ import HeroAtmosphereCanvas from "@/components/webgl/HeroAtmosphereCanvas";
 export default function VideoHero() {
   return (
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
-      {/* Background Gradient (video fallback) */}
-      <div className="absolute inset-0 gradient-hero" />
+      {/* Background Video */}
+      <div className="absolute inset-0 z-0">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="h-full w-full object-cover opacity-30"
+        >
+          <source src="https://www.pexels.com/download/video/34431086/" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-b from-bg/40 via-bg/80 to-bg" />
+      </div>
 
       {/* Soft spotlight overlay */}
       <div className="absolute inset-0 gradient-spotlight" />
