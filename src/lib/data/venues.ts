@@ -123,7 +123,7 @@ export const venues: Venue[] = [
     city: "Petaling Jaya",
     country: "Malaysia",
     priceFrom: 10000,
-    heroImageUrl: "https://unsplash.com/photos/a-group-of-people-standing-under-a-tent-at-night-PF4Y7N86EzI",
+    heroImageUrl: "https://images.unsplash.com/photo-1695128861516-d9b48461c04c?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     heroVideoUrl: undefined,
     galleryUrls: [],
     amenities: [
@@ -171,7 +171,7 @@ export const venues: Venue[] = [
     city: "Petaling Jaya",
     country: "Malaysia",
     priceFrom: 12000,
-    heroImageUrl: "https://images.unsplash.com/photo-1558000143-a61d15c71aeb?q=80&w=2000&auto=format&fit=crop",
+    heroImageUrl: "https://images.unsplash.com/photo-1682204814707-834cf3dce7b1?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     heroVideoUrl: undefined,
     galleryUrls: [],
     amenities: [
