@@ -24,13 +24,15 @@ export default function CinematicNavbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-500 w-full ${
         isScrolled
-          ? "glass-strong shadow-[var(--shadow-md)]"
-          : "bg-transparent"
+          ? "top-4 max-w-[95%] lg:max-w-5xl rounded-full glass-strong shadow-[0_0_40px_rgba(200,169,106,0.15)] border border-border"
+          : "top-0 max-w-full bg-transparent border-transparent"
       }`}
     >
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
+      <nav className={`mx-auto flex w-full items-center justify-between transition-all duration-500 ${
+        isScrolled ? "px-6 py-2.5" : "px-6 py-4 lg:px-8 max-w-7xl"
+      }`}>
         {/* Logo */}
         <Link
           href="/"
