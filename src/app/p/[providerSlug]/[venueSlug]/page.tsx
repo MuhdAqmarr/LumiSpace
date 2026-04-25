@@ -57,7 +57,10 @@ export default function ProviderVenueDetailPage() {
         {/* Hero Section */}
         <section className="relative h-[60vh] min-h-[500px] w-full pt-[var(--nav-height)]">
           <div className="absolute inset-0 bg-gradient-to-b from-bg/20 via-bg/60 to-bg z-10" />
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center" />
+          <div 
+            className="absolute inset-0 bg-cover bg-center" 
+            style={{ backgroundImage: `url('${venue.heroImageUrl || "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000&auto=format&fit=crop"}')` }}
+          />
           
           <div className="relative z-20 h-full max-w-7xl mx-auto px-6 lg:px-8 flex flex-col justify-end pb-16">
             <Link href={`/p/${provider.slug}`} className="inline-flex items-center gap-2 text-sm text-text-secondary hover:text-gold transition-colors mb-6 w-fit">

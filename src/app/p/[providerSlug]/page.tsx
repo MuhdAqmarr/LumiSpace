@@ -54,6 +54,15 @@ export default function ProviderLandingPage() {
       <main className="min-h-screen bg-bg">
         {/* Provider Hero */}
         <section className="relative pt-[calc(var(--nav-height)+40px)] pb-24 border-b border-border overflow-hidden">
+          {/* Provider Background Image */}
+          {provider.heroImageUrl && (
+            <div 
+              className="absolute inset-0 bg-cover bg-center opacity-20" 
+              style={{ backgroundImage: `url('${provider.heroImageUrl}')` }}
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-b from-bg/40 via-bg/80 to-bg z-0" />
+
           {/* Theme background based on provider's webglPreset */}
           <div className="absolute inset-0 opacity-20" 
                style={{

@@ -24,7 +24,7 @@ export const venues: Venue[] = [
     city: "Kuala Lumpur",
     country: "Malaysia",
     priceFrom: 15000,
-    heroImageUrl: undefined,
+    heroImageUrl: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000&auto=format&fit=crop",
     heroVideoUrl: undefined,
     galleryUrls: [],
     amenities: [
@@ -74,7 +74,7 @@ export const venues: Venue[] = [
     city: "Kuala Lumpur",
     country: "Malaysia",
     priceFrom: 8000,
-    heroImageUrl: undefined,
+    heroImageUrl: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2000&auto=format&fit=crop",
     heroVideoUrl: undefined,
     galleryUrls: [],
     amenities: [
@@ -123,7 +123,7 @@ export const venues: Venue[] = [
     city: "Petaling Jaya",
     country: "Malaysia",
     priceFrom: 10000,
-    heroImageUrl: undefined,
+    heroImageUrl: "https://images.unsplash.com/photo-1533106497176-45ae19e68ba2?q=80&w=2000&auto=format&fit=crop",
     heroVideoUrl: undefined,
     galleryUrls: [],
     amenities: [
@@ -171,7 +171,7 @@ export const venues: Venue[] = [
     city: "Petaling Jaya",
     country: "Malaysia",
     priceFrom: 12000,
-    heroImageUrl: undefined,
+    heroImageUrl: "https://images.unsplash.com/photo-1558000143-a61d15c71aeb?q=80&w=2000&auto=format&fit=crop",
     heroVideoUrl: undefined,
     galleryUrls: [],
     amenities: [
@@ -223,7 +223,7 @@ export const venues: Venue[] = [
     city: "Shah Alam",
     country: "Malaysia",
     priceFrom: 9000,
-    heroImageUrl: undefined,
+    heroImageUrl: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=2000&auto=format&fit=crop",
     heroVideoUrl: undefined,
     galleryUrls: [],
     amenities: [
@@ -273,7 +273,7 @@ export const venues: Venue[] = [
     city: "Shah Alam",
     country: "Malaysia",
     priceFrom: 3500,
-    heroImageUrl: undefined,
+    heroImageUrl: "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=2000&auto=format&fit=crop",
     heroVideoUrl: undefined,
     galleryUrls: [],
     amenities: [
