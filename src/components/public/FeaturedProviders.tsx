@@ -8,7 +8,7 @@ import ScrollReveal from "@/components/motion/ScrollReveal";
 import SplitTextReveal from "@/components/motion/SplitTextReveal";
 
 export default function FeaturedProviders() {
-  const approvedProviders = providers.filter((p) => p.status === "approved");
+  const approvedProviders = providers.filter((p) => p.status === "approved").slice(0, 3);
 
   return (
     <section className="relative py-24 lg:py-32 gradient-spotlight">
