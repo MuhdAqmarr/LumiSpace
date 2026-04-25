@@ -72,7 +72,7 @@ export default function CustomSelect({
 
       {/* Dropdown Menu */}
       <div
-        className={`absolute left-0 top-full z-50 mt-2 w-full origin-top transform overflow-hidden rounded-xl border border-border bg-bg-surface/95 backdrop-blur-xl shadow-xl transition-all duration-300 ${
+        className={`absolute left-0 top-full z-[9999] mt-2 w-full origin-top transform overflow-hidden rounded-xl border border-border bg-bg-surface/95 backdrop-blur-xl shadow-xl transition-all duration-300 ${
           isOpen
             ? "scale-y-100 opacity-100"
             : "scale-y-0 opacity-0 pointer-events-none"
