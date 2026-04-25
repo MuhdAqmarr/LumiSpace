@@ -146,22 +146,14 @@ export default function ProvidersPage() {
                           ["--glow" as string]: colors.glow,
                         }}
                       >
-                        {/* Gradient Header */}
+                        {/* Hero Image */}
                         <div
-                          className="relative h-40 overflow-hidden"
+                          className="relative h-40 overflow-hidden bg-cover bg-center"
                           style={{
-                            background: `radial-gradient(ellipse at 50% 0%, ${colors.glow.replace("0.12", "0.4")} 0%, transparent 70%), #12100E`,
+                            backgroundImage: `url('${provider.heroImageUrl || "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000&auto=format&fit=crop"}')`,
                           }}
                         >
-                          {/* Provider Initial */}
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <span
-                              className="font-display text-6xl font-medium opacity-20 select-none"
-                              style={{ color: colors.accent }}
-                            >
-                              {provider.brandName.charAt(0)}
-                            </span>
-                          </div>
+                          <div className="absolute inset-0 bg-gradient-to-t from-bg-surface via-bg-surface/30 to-transparent" />
 
                           {/* Venue count badge */}
                           <div className="absolute top-4 right-4 flex items-center gap-1.5 rounded-full bg-bg/60 backdrop-blur-sm border border-border px-3 py-1">
