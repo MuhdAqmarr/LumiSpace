@@ -45,9 +45,11 @@ export default function AdminDashboardPage() {
         if (providerId) {
           setStats(getProviderStats(providerId));
           const allBookings = getBookingsByProviderId(providerId);
-          allBookings.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-          setRecentBookings(allBookings.slice(0, 5));
+          const pending = allBookings.filter(b => b.status === "pending")
+            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          setRecentBookings(pending.slice(0, 5));
         }
+
       }
     }
     setLoading(false);
@@ -230,11 +232,7 @@ export default function AdminDashboardPage() {
                   <div>
                     <div className="flex items-center gap-3 mb-1">
                       <span className="font-mono text-sm text-text-primary">{booking.bookingCode}</span>
-                      <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                        booking.status === 'approved' ? 'bg-success/10 text-success border-success/20' :
-                        booking.status === 'rejected' ? 'bg-danger/10 text-danger border-danger/20' :
-                        'bg-warning/10 text-warning border-warning/20'
-                      }`}>
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-medium border bg-warning/10 text-warning border-warning/20">
                         {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
                       </span>
                     </div>
@@ -253,12 +251,17 @@ export default function AdminDashboardPage() {
             </div>
           ) : (
             <div className="p-12 text-center flex flex-col items-center">
-              <AlertCircle className="w-8 h-8 text-text-muted mb-3" />
-              <p className="text-text-secondary">No recent booking activity found.</p>
+              <CheckCircle2 className="w-10 h-10 text-success mb-4" />
+              <h3 className="font-display text-xl text-text-primary mb-2">All Caught Up!</h3>
+              <p className="text-text-secondary max-w-xs">No pending booking requests to review at the moment.</p>
+              <Link href="/admin/bookings" className="mt-6 text-sm text-gold hover:underline font-medium">
+                View All Bookings →
+              </Link>
             </div>
           )}
         </div>
       )}
+
 
     </div>
   );
