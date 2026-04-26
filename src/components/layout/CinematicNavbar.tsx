@@ -73,6 +73,8 @@ export default function CinematicNavbar() {
                 </Link>
                 <Link
                   href="/admin/login"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold uppercase tracking-widest text-text-secondary hover:text-gold hover:bg-gold/5 transition-all no-underline group"
                 >
                   <UserCircle className="w-4 h-4 text-text-muted group-hover:text-gold transition-colors" />
@@ -137,6 +139,8 @@ export default function CinematicNavbar() {
                 </Link>
                 <Link
                   href="/admin/login"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={() => setIsMobileOpen(false)}
                   className="flex items-center gap-3 text-sm font-medium text-text-secondary hover:text-gold no-underline"
                 >
