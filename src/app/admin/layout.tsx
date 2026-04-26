@@ -27,7 +27,7 @@ export default function AdminLayout({
     setMounted(true);
     if (!isLoginPage) {
       if (!isAuthenticated()) {
-        router.push("/admin/login");
+        router.replace("/admin/login");
       } else {
         const u = getCurrentUser();
         if (u) {
@@ -53,7 +53,7 @@ export default function AdminLayout({
 
   const handleLogout = () => {
     logout();
-    router.push("/admin/login");
+    router.replace("/admin/login");
   };
 
   // Don't render until mounted to prevent hydration mismatch with localStorage
