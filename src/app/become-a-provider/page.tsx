@@ -9,7 +9,9 @@ import CinematicNavbar from "@/components/layout/CinematicNavbar";
 import Footer from "@/components/layout/Footer";
 import { createProvider } from "@/lib/services/provider-service";
 import { createVenue } from "@/lib/services/venue-service";
+import { registerUser } from "@/lib/services/auth-service";
 import CustomSelect from "@/components/ui/CustomSelect";
+
 import CustomNumberInput from "@/components/ui/CustomNumberInput";
 import { providerRegistrationSchema, ProviderRegistrationFormValues } from "@/lib/schemas/provider-schema";
 
@@ -377,8 +379,31 @@ export default function BecomeProviderPage() {
                     />
                     {errors.firstVenueDescription && <p className="mt-1 text-xs text-danger">{errors.firstVenueDescription.message}</p>}
                   </div>
+
+                  <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-text-secondary mb-2">Venue Hero Image URL *</label>
+                      <input 
+                        type="url"
+                        {...register("heroImageUrl")}
+                        placeholder="https://images.unsplash.com/..."
+                        className={`w-full bg-bg border ${errors.heroImageUrl ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
+                      />
+                      {errors.heroImageUrl && <p className="mt-1 text-xs text-danger">{errors.heroImageUrl.message}</p>}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-text-secondary mb-2">Brand Logo URL (Optional)</label>
+                      <input 
+                        type="url"
+                        {...register("logoUrl")}
+                        placeholder="https://brand.com/logo.png"
+                        className={`w-full bg-bg border ${errors.logoUrl ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
+
 
               <div className="pt-8 border-t border-border flex justify-end">
                 <button 
