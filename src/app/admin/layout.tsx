@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { LayoutDashboard, CalendarDays, Building2, Settings, LogOut, Sparkles, Menu, X, Store } from "lucide-react";
-import { isAuthenticated, getCurrentUser, logout, isPlatformAdmin } from "@/lib/services/auth-service";
+import { isAuthenticated, getCurrentUser, logout, getProviderIdForUser } from "@/lib/services/auth-service";
+import { getProviderById } from "@/lib/services/provider-service";
 
 export default function AdminLayout({
   children,
@@ -16,7 +17,7 @@ export default function AdminLayout({
   
   const [mounted, setMounted] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [user, setUser] = useState<{ fullName: string; email: string; role: string } | null>(null);
+  const [user, setUser] = useState<{ displayName: string; email: string; role: string } | null>(null);
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
   // Is this the login page?
@@ -30,8 +31,21 @@ export default function AdminLayout({
       } else {
         const u = getCurrentUser();
         if (u) {
-          setUser({ fullName: u.fullName, email: u.email, role: u.role });
-          setIsSuperAdmin(u.role === "platform_admin");
+          let name = u.fullName;
+          const isSuper = u.role === "platform_admin";
+          
+          if (!isSuper) {
+            const providerId = getProviderIdForUser(u.id);
+            if (providerId) {
+              const provider = getProviderById(providerId);
+              if (provider) name = provider.brandName;
+            }
+          } else {
+            name = "LumiSpace Admin";
+          }
+
+          setUser({ displayName: name, email: u.email, role: u.role });
+          setIsSuperAdmin(isSuper);
         }
       }
     }
@@ -101,7 +115,7 @@ export default function AdminLayout({
 
         {/* User Info */}
         <div className="p-8 border-b border-border">
-          <p className="text-sm font-medium text-text-primary truncate">{user?.fullName}</p>
+          <p className="text-sm font-medium text-text-primary truncate">{user?.displayName}</p>
           <p className="text-xs text-text-muted truncate mt-1">{user?.email}</p>
           <div className="mt-3 inline-flex px-2 py-1 rounded bg-gold/10 border border-gold/20 text-[10px] uppercase tracking-wider text-gold">
             {isSuperAdmin ? "Platform Admin" : "Provider Admin"}
