@@ -118,7 +118,8 @@ export default function AdminLoginPage() {
               <Info className="w-4 h-4" /> Demo Accounts Available
             </h3>
             <div className="space-y-3">
-              {demoAccounts.map(acc => (
+              {demoAccounts.map((acc: { email: string; password: string; providerName: string }) => (
+
                 <button 
                   key={acc.email}
                   type="button"
