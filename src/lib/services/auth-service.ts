@@ -6,7 +6,7 @@
 import { Profile, UserRole } from "@/lib/types";
 
 const AUTH_KEY = "lumispace_auth";
-const ACCOUNTS_KEY = "lumispace_accounts_v3";
+const ACCOUNTS_KEY = "lumispace_accounts_v4";
 
 // Demo credentials
 const SEED_ACCOUNTS: { email: string; password: string; profile: Profile }[] = [
@@ -55,7 +55,7 @@ const SEED_ACCOUNTS: { email: string; password: string; profile: Profile }[] = [
     profile: {
       id: "user-superadmin",
       email: "admin@lumispace.test",
-      fullName: "LumiSpace Admin",
+      fullName: "Super Admin",
       phone: "+60 3-0000 0000",
       role: "platform_admin" as UserRole,
       createdAt: "2025-01-01T00:00:00Z",
@@ -167,7 +167,7 @@ export function getDemoCredentials() {
     let displayName = a.profile.fullName;
     
     if (a.profile.role === "platform_admin") {
-      displayName = "LumiSpace Admin";
+      displayName = "Super Admin";
     } else {
       const providerId = getProviderIdForUser(a.profile.id);
       if (providerId) {
