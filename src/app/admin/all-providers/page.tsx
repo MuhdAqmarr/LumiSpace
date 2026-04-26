@@ -301,18 +301,6 @@ export default function AllProvidersPage() {
           </div>
         </div>
       )}
-
-
-                {/* ID & Date */}
-                <div className="shrink-0 text-right hidden md:block">
-                  <p className="font-mono text-[10px] text-text-muted">{provider.id}</p>
-                  <p className="text-[10px] text-text-muted mt-1">Since {new Date(provider.createdAt).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
     </div>
   );
 }
