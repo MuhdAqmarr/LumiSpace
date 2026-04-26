@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Save, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { venueSchema, VenueFormValues } from "@/lib/schemas/venue-schema";
+export type { VenueFormValues };
 import CustomSelect from "@/components/ui/CustomSelect";
 import CustomNumberInput from "@/components/ui/CustomNumberInput";
 import { Venue } from "@/lib/types";
