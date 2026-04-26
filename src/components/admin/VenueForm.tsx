@@ -100,7 +100,7 @@ export default function VenueForm({ mode, defaultValues, onSubmit, isSubmitting 
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
 
       {/* ─── Section 1: Basic Info ──────────────────────────── */}
-      <div className="glass-strong rounded-2xl border border-border p-6 md:p-8 space-y-6">
+      <div className="bg-bg-surface rounded-2xl border border-border p-6 md:p-8 space-y-6">
         <h2 className="font-display text-xl text-text-primary flex items-center gap-3 pb-4 border-b border-border">
           <span className="flex items-center justify-center w-7 h-7 rounded-full bg-gold/10 text-gold text-xs font-medium border border-gold/30">1</span>
           Basic Information
@@ -146,7 +146,7 @@ export default function VenueForm({ mode, defaultValues, onSubmit, isSubmitting 
       </div>
 
       {/* ─── Section 2: Capacity & Pricing ─────────────────────── */}
-      <div className="glass-strong rounded-2xl border border-border p-6 md:p-8 space-y-6">
+      <div className="bg-bg-surface rounded-2xl border border-border p-6 md:p-8 space-y-6">
         <h2 className="font-display text-xl text-text-primary flex items-center gap-3 pb-4 border-b border-border">
           <span className="flex items-center justify-center w-7 h-7 rounded-full bg-gold/10 text-gold text-xs font-medium border border-gold/30">2</span>
           Capacity & Pricing
@@ -202,7 +202,7 @@ export default function VenueForm({ mode, defaultValues, onSubmit, isSubmitting 
       </div>
 
       {/* ─── Section 3: Location ──────────────────────────────── */}
-      <div className="glass-strong rounded-2xl border border-border p-6 md:p-8 space-y-6">
+      <div className="bg-bg-surface rounded-2xl border border-border p-6 md:p-8 space-y-6">
         <h2 className="font-display text-xl text-text-primary flex items-center gap-3 pb-4 border-b border-border">
           <span className="flex items-center justify-center w-7 h-7 rounded-full bg-gold/10 text-gold text-xs font-medium border border-gold/30">3</span>
           Location
@@ -231,7 +231,7 @@ export default function VenueForm({ mode, defaultValues, onSubmit, isSubmitting 
       </div>
 
       {/* ─── Section 4: Media ─────────────────────────────────── */}
-      <div className="glass-strong rounded-2xl border border-border p-6 md:p-8 space-y-6">
+      <div className="bg-bg-surface rounded-2xl border border-border p-6 md:p-8 space-y-6">
         <h2 className="font-display text-xl text-text-primary flex items-center gap-3 pb-4 border-b border-border">
           <span className="flex items-center justify-center w-7 h-7 rounded-full bg-gold/10 text-gold text-xs font-medium border border-gold/30">4</span>
           Media
@@ -252,7 +252,7 @@ export default function VenueForm({ mode, defaultValues, onSubmit, isSubmitting 
       </div>
 
       {/* ─── Section 5: Details ───────────────────────────────── */}
-      <div className="glass-strong rounded-2xl border border-border p-6 md:p-8 space-y-6">
+      <div className="bg-bg-surface rounded-2xl border border-border p-6 md:p-8 space-y-6">
         <h2 className="font-display text-xl text-text-primary flex items-center gap-3 pb-4 border-b border-border">
           <span className="flex items-center justify-center w-7 h-7 rounded-full bg-gold/10 text-gold text-xs font-medium border border-gold/30">5</span>
           Amenities & Rules

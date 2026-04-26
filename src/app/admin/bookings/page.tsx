@@ -63,7 +63,7 @@ export default function AdminBookingsPage() {
       </div>
 
       {/* Filters & Search */}
-      <div className="glass-strong rounded-2xl border border-border p-4 mb-8 flex flex-col md:flex-row gap-4">
+      <div className="bg-bg-surface rounded-2xl border border-border p-4 mb-8 flex flex-col md:flex-row gap-4 relative z-10">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
           <input 
