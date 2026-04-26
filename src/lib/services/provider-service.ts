@@ -7,7 +7,7 @@ import { Provider } from "@/lib/types";
 import { providers as seedProviders } from "@/lib/data/providers";
 import { generateId, slugify } from "@/lib/utils";
 
-const STORAGE_KEY = "lumispace_providers";
+const STORAGE_KEY = "lumispace_providers_v2";
 
 function getStoredProviders(): Provider[] {
   if (typeof window === "undefined") return seedProviders;
@@ -73,3 +73,11 @@ export function updateProvider(
   saveProviders(providers);
   return providers[index];
 }
+
+export function updateProviderStatus(
+  id: string,
+  status: "approved" | "pending" | "suspended"
+): Provider | undefined {
+  return updateProvider(id, { status });
+}
+

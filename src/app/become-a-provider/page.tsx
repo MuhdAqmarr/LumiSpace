@@ -9,6 +9,10 @@ import CinematicNavbar from "@/components/layout/CinematicNavbar";
 import Footer from "@/components/layout/Footer";
 import { createProvider } from "@/lib/services/provider-service";
 import { createVenue } from "@/lib/services/venue-service";
+import { registerUser } from "@/lib/services/auth-service";
+import CustomSelect from "@/components/ui/CustomSelect";
+
+import CustomNumberInput from "@/components/ui/CustomNumberInput";
 import { providerRegistrationSchema, ProviderRegistrationFormValues } from "@/lib/schemas/provider-schema";
 
 export default function BecomeProviderPage() {
@@ -18,6 +22,8 @@ export default function BecomeProviderPage() {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<ProviderRegistrationFormValues>({
     resolver: zodResolver(providerRegistrationSchema),
@@ -25,6 +31,8 @@ export default function BecomeProviderPage() {
       brandName: "",
       tagline: "",
       description: "",
+      ownerFullName: "",
+      password: "",
       contactEmail: "",
       contactPhone: "",
       address: "",
@@ -36,11 +44,12 @@ export default function BecomeProviderPage() {
       capacityMax: undefined,
       priceFrom: undefined,
       firstVenueDescription: "",
-      heroImageUrl: "",
+      brandHeaderImageUrl: "",
+      venueHeroImageUrl: "",
       heroVideoUrl: "",
-      logoUrl: "",
     },
   });
+
 
   const onSubmit = async (data: ProviderRegistrationFormValues) => {
     setIsSubmitting(true);
@@ -49,7 +58,16 @@ export default function BecomeProviderPage() {
       // Simulate network delay
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      // 1. Create Provider
+      // 1. Create Admin Account (Profile)
+      const profile = registerUser(
+        data.contactEmail,
+        data.password,
+        data.ownerFullName,
+        data.contactPhone,
+        "provider_admin"
+      );
+
+      // 2. Create Provider
       const provider = createProvider({
         brandName: data.brandName,
         tagline: data.tagline,
@@ -59,13 +77,13 @@ export default function BecomeProviderPage() {
         address: data.address,
         city: data.city,
         country: data.country,
-        logoUrl: data.logoUrl || undefined,
+        heroImageUrl: data.brandHeaderImageUrl || undefined,
         themeJson: { webglPreset: "gold", accentColor: "#C8A96A" }, // default theme
-        ownerId: "demo_owner_id",
+        ownerId: profile.id,
         story: "A new standard for premium spaces.",
       });
 
-      // 2. Create Initial Venue
+      // 3. Create Initial Venue
       createVenue({
         providerId: provider.id,
         name: data.firstVenueName,
@@ -82,7 +100,7 @@ export default function BecomeProviderPage() {
         amenities: ["Wi-Fi", "Parking"], // defaults
         rules: ["No smoking indoors"], // defaults
         eventTypes: ["Corporate Event", "Private Dinner", "Wedding"], // defaults
-        heroImageUrl: data.heroImageUrl || undefined,
+        heroImageUrl: data.venueHeroImageUrl || undefined,
         heroVideoUrl: data.heroVideoUrl || undefined,
         galleryUrls: [],
       });
@@ -183,6 +201,30 @@ export default function BecomeProviderPage() {
                     {errors.description && <p className="mt-1 text-xs text-danger">{errors.description.message}</p>}
                   </div>
 
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:col-span-2">
+                    <div>
+                      <label className="block text-sm font-medium text-text-secondary mb-2">Owner Full Name *</label>
+                      <input 
+                        type="text"
+                        {...register("ownerFullName")}
+                        placeholder="e.g. John Doe"
+                        className={`w-full bg-bg border ${errors.ownerFullName ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
+                      />
+                      {errors.ownerFullName && <p className="mt-1 text-xs text-danger">{errors.ownerFullName.message}</p>}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-text-secondary mb-2">Admin Password *</label>
+                      <input 
+                        type="password"
+                        {...register("password")}
+                        placeholder="At least 8 characters"
+                        className={`w-full bg-bg border ${errors.password ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
+                      />
+                      {errors.password && <p className="mt-1 text-xs text-danger">{errors.password.message}</p>}
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-text-secondary mb-2">Contact Email *</label>
                     <input 
@@ -217,17 +259,20 @@ export default function BecomeProviderPage() {
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <select 
-                          {...register("city")}
-                          className={`w-full bg-bg border ${errors.city ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
-                        >
-                          <option value="">Select City...</option>
-                          <option value="Kuala Lumpur">Kuala Lumpur</option>
-                          <option value="Petaling Jaya">Petaling Jaya</option>
-                          <option value="Shah Alam">Shah Alam</option>
-                          <option value="Penang">Penang</option>
-                          <option value="Johor Bahru">Johor Bahru</option>
-                        </select>
+                        <CustomSelect
+                          options={[
+                            { value: "", label: "Select City..." },
+                            { value: "Kuala Lumpur", label: "Kuala Lumpur" },
+                            { value: "Petaling Jaya", label: "Petaling Jaya" },
+                            { value: "Shah Alam", label: "Shah Alam" },
+                            { value: "Penang", label: "Penang" },
+                            { value: "Johor Bahru", label: "Johor Bahru" },
+                          ]}
+                          value={watch("city")}
+                          onChange={(val) => setValue("city", val, { shouldValidate: true })}
+                          error={!!errors.city}
+                          placeholder="Select City..."
+                        />
                         {errors.city && <p className="mt-1 text-xs text-danger">{errors.city.message}</p>}
                       </div>
                       <div>
@@ -240,7 +285,19 @@ export default function BecomeProviderPage() {
                       </div>
                     </div>
                   </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-text-secondary mb-2">Brand Header Image URL (Optional)</label>
+                    <input 
+                      type="url"
+                      {...register("brandHeaderImageUrl")}
+                      placeholder="https://images.unsplash.com/brand-header..."
+                      className={`w-full bg-bg border ${errors.brandHeaderImageUrl ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
+                    />
+                    <p className="mt-2 text-[10px] text-text-muted italic">This high-quality image will be the face of your brand profile.</p>
+                  </div>
                 </div>
+
               </div>
 
               {/* Section 2: First Venue */}
@@ -264,51 +321,63 @@ export default function BecomeProviderPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-text-secondary mb-2">Venue Type *</label>
-                    <select 
-                      {...register("firstVenueType")}
-                      className={`w-full bg-bg border ${errors.firstVenueType ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
-                    >
-                      <option value="">Select type...</option>
-                      <option value="Ballroom">Ballroom</option>
-                      <option value="Rooftop">Rooftop</option>
-                      <option value="Garden">Garden</option>
-                      <option value="Loft Hall">Loft Hall</option>
-                      <option value="Pavilion">Pavilion</option>
-                      <option value="Seminar Room">Seminar Room</option>
-                      <option value="Other">Other</option>
-                    </select>
+                    <CustomSelect
+                      options={[
+                        { value: "", label: "Select type..." },
+                        { value: "Ballroom", label: "Ballroom" },
+                        { value: "Rooftop", label: "Rooftop" },
+                        { value: "Garden", label: "Garden" },
+                        { value: "Loft Hall", label: "Loft Hall" },
+                        { value: "Pavilion", label: "Pavilion" },
+                        { value: "Seminar Room", label: "Seminar Room" },
+                        { value: "Other", label: "Other" },
+                      ]}
+                      value={watch("firstVenueType")}
+                      onChange={(val) => setValue("firstVenueType", val, { shouldValidate: true })}
+                      error={!!errors.firstVenueType}
+                      placeholder="Select type..."
+                    />
                     {errors.firstVenueType && <p className="mt-1 text-xs text-danger">{errors.firstVenueType.message}</p>}
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-text-secondary mb-2">Minimum Capacity *</label>
-                    <input 
-                      type="number"
-                      {...register("capacityMin", { valueAsNumber: true })}
+                    <CustomNumberInput
+                      value={watch("capacityMin")}
+                      onChange={(val) => setValue("capacityMin", val, { shouldValidate: true })}
+                      min={1}
+                      max={10000}
+                      error={!!errors.capacityMin}
                       placeholder="e.g. 50"
-                      className={`w-full bg-bg border ${errors.capacityMin ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
+                      className="!bg-bg"
                     />
                     {errors.capacityMin && <p className="mt-1 text-xs text-danger">{errors.capacityMin.message}</p>}
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-text-secondary mb-2">Maximum Capacity *</label>
-                    <input 
-                      type="number"
-                      {...register("capacityMax", { valueAsNumber: true })}
+                    <CustomNumberInput
+                      value={watch("capacityMax")}
+                      onChange={(val) => setValue("capacityMax", val, { shouldValidate: true })}
+                      min={1}
+                      max={100000}
+                      error={!!errors.capacityMax}
                       placeholder="e.g. 500"
-                      className={`w-full bg-bg border ${errors.capacityMax ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
+                      className="!bg-bg"
                     />
                     {errors.capacityMax && <p className="mt-1 text-xs text-danger">{errors.capacityMax.message}</p>}
                   </div>
 
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-text-secondary mb-2">Starting Price (RM) *</label>
-                    <input 
-                      type="number"
-                      {...register("priceFrom", { valueAsNumber: true })}
+                    <CustomNumberInput
+                      value={watch("priceFrom")}
+                      onChange={(val) => setValue("priceFrom", val, { shouldValidate: true })}
+                      min={1}
+                      max={1000000}
+                      error={!!errors.priceFrom}
                       placeholder="e.g. 15000"
-                      className={`w-full bg-bg border ${errors.priceFrom ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
+                      className="!bg-bg"
                     />
                     {errors.priceFrom && <p className="mt-1 text-xs text-danger">{errors.priceFrom.message}</p>}
                   </div>
@@ -323,8 +392,22 @@ export default function BecomeProviderPage() {
                     />
                     {errors.firstVenueDescription && <p className="mt-1 text-xs text-danger">{errors.firstVenueDescription.message}</p>}
                   </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-text-secondary mb-2">Venue Hero Image URL *</label>
+                    <input 
+                      type="url"
+                      {...register("venueHeroImageUrl")}
+                      placeholder="https://images.unsplash.com/venue-hero..."
+                      className={`w-full bg-bg border ${errors.venueHeroImageUrl ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
+                    />
+                    {errors.venueHeroImageUrl && <p className="mt-1 text-xs text-danger">{errors.venueHeroImageUrl.message}</p>}
+                  </div>
+
                 </div>
               </div>
+
+
 
               <div className="pt-8 border-t border-border flex justify-end">
                 <button 

@@ -24,7 +24,7 @@ export const venues: Venue[] = [
     city: "Kuala Lumpur",
     country: "Malaysia",
     priceFrom: 15000,
-    heroImageUrl: undefined,
+    heroImageUrl: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000&auto=format&fit=crop",
     heroVideoUrl: undefined,
     galleryUrls: [],
     amenities: [
@@ -74,7 +74,7 @@ export const venues: Venue[] = [
     city: "Kuala Lumpur",
     country: "Malaysia",
     priceFrom: 8000,
-    heroImageUrl: undefined,
+    heroImageUrl: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2000&auto=format&fit=crop",
     heroVideoUrl: undefined,
     galleryUrls: [],
     amenities: [
@@ -123,7 +123,7 @@ export const venues: Venue[] = [
     city: "Petaling Jaya",
     country: "Malaysia",
     priceFrom: 10000,
-    heroImageUrl: undefined,
+    heroImageUrl: "https://images.unsplash.com/photo-1695128861516-d9b48461c04c?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     heroVideoUrl: undefined,
     galleryUrls: [],
     amenities: [
@@ -171,7 +171,7 @@ export const venues: Venue[] = [
     city: "Petaling Jaya",
     country: "Malaysia",
     priceFrom: 12000,
-    heroImageUrl: undefined,
+    heroImageUrl: "https://images.unsplash.com/photo-1682204814707-834cf3dce7b1?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     heroVideoUrl: undefined,
     galleryUrls: [],
     amenities: [
@@ -223,7 +223,7 @@ export const venues: Venue[] = [
     city: "Shah Alam",
     country: "Malaysia",
     priceFrom: 9000,
-    heroImageUrl: undefined,
+    heroImageUrl: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=2000&auto=format&fit=crop",
     heroVideoUrl: undefined,
     galleryUrls: [],
     amenities: [
@@ -273,7 +273,7 @@ export const venues: Venue[] = [
     city: "Shah Alam",
     country: "Malaysia",
     priceFrom: 3500,
-    heroImageUrl: undefined,
+    heroImageUrl: "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=2000&auto=format&fit=crop",
     heroVideoUrl: undefined,
     galleryUrls: [],
     amenities: [

@@ -52,18 +52,20 @@ export default function Footer() {
             <ul className="space-y-3">
               {[
                 { href: "/become-a-provider", label: "Become a Provider" },
-                { href: "/admin/login", label: "Provider Login" },
-                { href: "/admin", label: "Dashboard" },
+                { href: "/admin/login", label: "Provider Login", target: "_blank" },
               ].map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
+                    target={(link as any).target}
+                    rel={(link as any).target === "_blank" ? "noopener noreferrer" : undefined}
                     className="text-sm text-text-secondary transition-colors hover:text-gold no-underline"
                   >
                     {link.label}
                   </Link>
                 </li>
               ))}
+
             </ul>
           </div>
 

@@ -7,7 +7,7 @@ import { Venue } from "@/lib/types";
 import { venues as seedVenues } from "@/lib/data/venues";
 import { generateId, slugify } from "@/lib/utils";
 
-const STORAGE_KEY = "lumispace_venues";
+const STORAGE_KEY = "lumispace_venues_v2";
 
 function getStoredVenues(): Venue[] {
   if (typeof window === "undefined") return seedVenues;
@@ -31,6 +31,8 @@ export function getVenues(): Venue[] {
 export function getPublishedVenues(): Venue[] {
   return getStoredVenues().filter((v) => v.status === "published");
 }
+
+
 
 export function getVenueBySlug(slug: string): Venue | undefined {
   return getStoredVenues().find((v) => v.slug === slug);

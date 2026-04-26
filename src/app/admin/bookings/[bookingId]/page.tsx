@@ -63,7 +63,7 @@ export default function AdminBookingDetailPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div>
       <Link href="/admin/bookings" className="inline-flex items-center gap-2 text-sm text-text-secondary hover:text-gold transition-colors mb-8">
         <ArrowLeft className="w-4 h-4" /> Back to Bookings
       </Link>

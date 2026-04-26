@@ -43,7 +43,7 @@ export default function AdminProviderProfilePage() {
   }
 
   return (
-    <div className="max-w-4xl">
+    <div>
       <div className="mb-10">
         <h1 className="font-display text-4xl text-text-primary mb-2">Provider Profile</h1>
         <p className="text-text-secondary">Manage your public brand identity and contact information.</p>

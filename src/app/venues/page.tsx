@@ -9,6 +9,7 @@ import { searchVenues } from "@/lib/services/venue-service";
 import { getProviders } from "@/lib/services/provider-service";
 import { Venue, Provider } from "@/lib/types";
 import { Search } from "lucide-react";
+import CustomSelect from "@/components/ui/CustomSelect";
 
 function VenueListingContent() {
   const searchParams = useSearchParams();
@@ -59,7 +60,7 @@ function VenueListingContent() {
             </p>
 
             {/* Filter Bar */}
-            <div className="mt-8 glass rounded-2xl border border-border p-2">
+            <div className="mt-8 bg-bg-surface rounded-2xl border border-border p-2 relative z-10">
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-4">
                 <input
                   type="text"
@@ -68,29 +69,31 @@ function VenueListingContent() {
                   onChange={(e) => setKeyword(e.target.value)}
                   className="rounded-xl bg-bg-elevated/50 px-4 py-3 text-sm text-text-primary outline-none placeholder:text-text-muted"
                 />
-                <select
+                <CustomSelect
+                  options={[
+                    { value: "", label: "Any location" },
+                    { value: "Kuala Lumpur", label: "Kuala Lumpur" },
+                    { value: "Petaling Jaya", label: "Petaling Jaya" },
+                    { value: "Shah Alam", label: "Shah Alam" },
+                  ]}
                   value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  className="rounded-xl bg-bg-elevated/50 px-4 py-3 text-sm text-text-primary outline-none"
-                >
-                  <option value="">Any location</option>
-                  <option value="Kuala Lumpur">Kuala Lumpur</option>
-                  <option value="Petaling Jaya">Petaling Jaya</option>
-                  <option value="Shah Alam">Shah Alam</option>
-                </select>
-                <select
+                  onChange={setCity}
+                  placeholder="Any location"
+                />
+                <CustomSelect
+                  options={[
+                    { value: "", label: "Any event type" },
+                    { value: "Wedding", label: "Wedding" },
+                    { value: "Corporate Dinner", label: "Corporate Dinner" },
+                    { value: "Product Launch", label: "Product Launch" },
+                    { value: "Exhibition", label: "Exhibition" },
+                    { value: "Seminar", label: "Seminar" },
+                    { value: "Birthday", label: "Birthday" },
+                  ]}
                   value={eventType}
-                  onChange={(e) => setEventType(e.target.value)}
-                  className="rounded-xl bg-bg-elevated/50 px-4 py-3 text-sm text-text-primary outline-none"
-                >
-                  <option value="">Any event type</option>
-                  <option value="Wedding">Wedding</option>
-                  <option value="Corporate Dinner">Corporate Dinner</option>
-                  <option value="Product Launch">Product Launch</option>
-                  <option value="Exhibition">Exhibition</option>
-                  <option value="Seminar">Seminar</option>
-                  <option value="Birthday">Birthday</option>
-                </select>
+                  onChange={setEventType}
+                  placeholder="Any event type"
+                />
                 <button
                   onClick={handleSearch}
                   className="flex items-center justify-center gap-2 rounded-xl bg-gold px-6 py-3 text-sm font-semibold uppercase tracking-wider text-bg transition-all duration-300 hover:bg-gold-light"

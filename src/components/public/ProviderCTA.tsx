@@ -45,10 +45,13 @@ export default function ProviderCTA() {
             <MagneticButton strength={15}>
               <Link
                 href="/become-a-provider"
-                className="group flex items-center gap-2 rounded-full bg-gold px-8 py-4 text-sm font-semibold uppercase tracking-wider text-bg transition-all duration-300 hover:bg-gold-light hover:shadow-[var(--shadow-glow)] no-underline"
+                className="group relative flex items-center gap-2 overflow-hidden rounded-full bg-gold px-8 py-4 text-sm font-semibold uppercase tracking-wider text-bg no-underline transition-all duration-300 hover:bg-gold-light hover:shadow-[var(--shadow-glow)]"
               >
-                Become a Provider
-                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                <div className="absolute inset-0 z-0 animate-[shimmer_3s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                <span className="relative z-10 flex items-center gap-2">
+                  Become a Provider
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </span>
               </Link>
             </MagneticButton>
             <MagneticButton strength={10}>

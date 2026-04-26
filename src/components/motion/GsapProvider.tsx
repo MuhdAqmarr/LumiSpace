@@ -8,6 +8,7 @@
 import { useEffect, createContext, useContext, type ReactNode } from "react";
 import { registerGsapPlugins } from "@/lib/motion/gsap";
 import { useReducedMotion } from "@/lib/motion/useReducedMotion";
+import { ReactLenis } from 'lenis/react';
 
 interface GsapContextValue {
   /** True when user prefers reduced motion */
@@ -35,7 +36,9 @@ export default function GsapProvider({ children }: GsapProviderProps) {
 
   return (
     <GsapContext.Provider value={{ prefersReducedMotion }}>
-      {children}
+      <ReactLenis root options={{ lerp: 0.08, duration: 1.5, smoothWheel: true }}>
+        {children}
+      </ReactLenis>
     </GsapContext.Provider>
   );
 }

@@ -21,13 +21,26 @@ export const providerRegistrationSchema = z.object({
     .min(50, "Description must be at least 50 characters")
     .max(1000, "Description must be under 1000 characters"),
 
+  ownerFullName: z
+    .string()
+    .min(2, "Full name must be at least 2 characters")
+    .max(100, "Full name must be under 100 characters"),
+
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .max(50, "Password must be under 50 characters"),
+
+
   contactEmail: z
     .string()
     .email("Please enter a valid email address"),
 
   contactPhone: z
     .string()
-    .min(8, "Phone number must be at least 8 characters"),
+    .min(8, "Phone number must be at least 8 characters")
+    .max(20, "Phone number must be under 20 characters")
+    .regex(/^\+?[0-9\s\-()]+$/, "Please enter a valid phone number (e.g. +60123456789)"),
 
   address: z
     .string()
@@ -69,11 +82,13 @@ export const providerRegistrationSchema = z.object({
     .min(20, "Venue description must be at least 20 characters")
     .max(500, "Venue description must be under 500 characters"),
 
-  // Branding (optional URLs for MVP)
-  heroImageUrl: z.string().optional().or(z.literal("")),
+  // Branding
+  brandHeaderImageUrl: z.string().optional().or(z.literal("")),
+  venueHeroImageUrl: z.string().optional().or(z.literal("")),
   heroVideoUrl: z.string().optional().or(z.literal("")),
-  logoUrl: z.string().optional().or(z.literal("")),
 });
+
+
 
 export type ProviderRegistrationFormValues = z.infer<
   typeof providerRegistrationSchema

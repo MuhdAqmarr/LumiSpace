@@ -79,7 +79,25 @@
     line-height: 1.2;
     letter-spacing: -0.02em;
   }
+
+  button, 
+  a, 
+  input[type="submit"], 
+  input[type="button"], 
+  input[type="checkbox"], 
+  input[type="radio"], 
+  label[for], 
+  select,
+  [role="button"] {
+    cursor: pointer;
+  }
+
+
+  button:disabled {
+    cursor: not-allowed;
+  }
 }
+
 
 /* ─── Selection ──────────────────────────────────────────────────── */
 ::selection {
@@ -252,4 +270,18 @@
 
   --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-200%) skewX(-20deg); }
+  100% { transform: translateX(200%) skewX(-20deg); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.1; transform: scale(0.8); }
+  50% { opacity: 0.8; transform: scale(1.2) rotate(45deg); }
+}
+
+.animate-twinkle {
+  animation: twinkle 3s ease-in-out infinite;
 }

@@ -17,7 +17,8 @@ export const bookingSchema = z.object({
   customerPhone: z
     .string()
     .min(8, "Phone number must be at least 8 characters")
-    .max(20, "Phone number must be under 20 characters"),
+    .max(20, "Phone number must be under 20 characters")
+    .regex(/^\+?[0-9\s\-()]+$/, "Please enter a valid phone number (e.g. +60123456789)"),
 
   organizationName: z
     .string()

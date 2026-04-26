@@ -51,8 +51,10 @@ export default function AdminLoginPage() {
   };
 
   const useDemoAccount = (email: string) => {
+    const account = demoAccounts.find((a: { email: string; password: string; providerName: string }) => a.email === email);
+
     setValue("email", email);
-    setValue("password", "password123");
+    setValue("password", account?.password || "password123");
   };
 
   return (
@@ -116,7 +118,8 @@ export default function AdminLoginPage() {
               <Info className="w-4 h-4" /> Demo Accounts Available
             </h3>
             <div className="space-y-3">
-              {demoAccounts.map(acc => (
+              {demoAccounts.map((acc: { email: string; password: string; providerName: string }) => (
+
                 <button 
                   key={acc.email}
                   type="button"

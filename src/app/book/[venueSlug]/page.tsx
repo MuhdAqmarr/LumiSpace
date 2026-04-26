@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, Calendar, Clock, Users, Building2, MapPin, CheckCircle2 } from "lucide-react";
@@ -10,6 +11,10 @@ import CinematicNavbar from "@/components/layout/CinematicNavbar";
 import Footer from "@/components/layout/Footer";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
+import CustomSelect from "@/components/ui/CustomSelect";
+import CustomDatePicker from "@/components/ui/CustomDatePicker";
+import CustomTimePicker from "@/components/ui/CustomTimePicker";
+import CustomNumberInput from "@/components/ui/CustomNumberInput";
 import { useToast } from "@/components/ui/Toast";
 import { getVenueBySlug } from "@/lib/services/venue-service";
 import { getProviderById } from "@/lib/services/provider-service";
@@ -34,6 +39,7 @@ export default function BookingPage() {
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
   } = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
@@ -128,66 +134,63 @@ export default function BookingPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-text-secondary mb-2">Event Type *</label>
-                      <select 
-                        {...register("eventType")}
-                        className={`w-full bg-bg-surface border ${errors.eventType ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
-                      >
-                        <option value="">Select event type...</option>
-                        {venue.eventTypes.map(type => (
-                          <option key={type} value={type}>{type}</option>
-                        ))}
-                        <option value="Other">Other</option>
-                      </select>
+                      <CustomSelect
+                        options={[
+                          { value: "", label: "Select event type..." },
+                          ...venue.eventTypes.map(type => ({ value: type, label: type })),
+                          { value: "Other", label: "Other" }
+                        ]}
+                        value={watch("eventType") || ""}
+                        onChange={(val) => setValue("eventType", val as any, { shouldValidate: true })}
+                        error={!!errors.eventType}
+                        placeholder="Select event type..."
+                      />
                       {errors.eventType && <p className="mt-1 text-xs text-danger">{errors.eventType.message}</p>}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-text-secondary mb-2">Guest Count *</label>
-                      <input 
-                        type="number"
-                        {...register("guestCount", { valueAsNumber: true })}
+                      <CustomNumberInput
+                        value={watch("guestCount")}
+                        onChange={(val) => setValue("guestCount", val, { shouldValidate: true })}
+                        min={venue.capacityMin}
+                        max={venue.capacityMax}
+                        error={!!errors.guestCount}
                         placeholder={`Capacity: ${venue.capacityMin} - ${venue.capacityMax}`}
-                        className={`w-full bg-bg-surface border ${errors.guestCount ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
                       />
                       {errors.guestCount && <p className="mt-1 text-xs text-danger">{errors.guestCount.message}</p>}
                     </div>
 
                     <div className="md:col-span-2">
                       <label className="block text-sm font-medium text-text-secondary mb-2">Event Date *</label>
-                      <div className="relative">
-                        <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
-                        <input 
-                          type="date"
-                          {...register("eventDate")}
-                          className={`w-full bg-bg-surface border ${errors.eventDate ? 'border-danger' : 'border-border'} rounded-xl pl-12 pr-4 py-3 text-text-primary outline-none focus:border-gold transition-colors [color-scheme:dark]`}
-                        />
-                      </div>
+                      <CustomDatePicker
+                        value={watch("eventDate") || ""}
+                        onChange={(val) => setValue("eventDate", val, { shouldValidate: true })}
+                        error={!!errors.eventDate}
+                        placeholder="Select event date"
+                      />
                       {errors.eventDate && <p className="mt-1 text-xs text-danger">{errors.eventDate.message}</p>}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-text-secondary mb-2">Start Time *</label>
-                      <div className="relative">
-                        <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
-                        <input 
-                          type="time"
-                          {...register("startTime")}
-                          className={`w-full bg-bg-surface border ${errors.startTime ? 'border-danger' : 'border-border'} rounded-xl pl-12 pr-4 py-3 text-text-primary outline-none focus:border-gold transition-colors [color-scheme:dark]`}
-                        />
-                      </div>
+                      <CustomTimePicker
+                        value={watch("startTime") || ""}
+                        onChange={(val) => setValue("startTime", val, { shouldValidate: true })}
+                        error={!!errors.startTime}
+                        placeholder="Select start time"
+                      />
                       {errors.startTime && <p className="mt-1 text-xs text-danger">{errors.startTime.message}</p>}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-text-secondary mb-2">End Time *</label>
-                      <div className="relative">
-                        <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
-                        <input 
-                          type="time"
-                          {...register("endTime")}
-                          className={`w-full bg-bg-surface border ${errors.endTime ? 'border-danger' : 'border-border'} rounded-xl pl-12 pr-4 py-3 text-text-primary outline-none focus:border-gold transition-colors [color-scheme:dark]`}
-                        />
-                      </div>
+                      <CustomTimePicker
+                        value={watch("endTime") || ""}
+                        onChange={(val) => setValue("endTime", val, { shouldValidate: true })}
+                        error={!!errors.endTime}
+                        placeholder="Select end time"
+                      />
                       {errors.endTime && <p className="mt-1 text-xs text-danger">{errors.endTime.message}</p>}
                     </div>
                   </div>
@@ -306,7 +309,16 @@ export default function BookingPage() {
                 
                 <div className="flex gap-4 mb-6 pb-6 border-b border-border">
                   <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0 relative bg-bg-surface border border-border">
-                    <div className="absolute inset-0 bg-gradient-to-br from-gold/20 to-transparent" />
+                    {venue.heroImageUrl || (venue.galleryUrls && venue.galleryUrls[0]) ? (
+                      <Image 
+                        src={venue.heroImageUrl || venue.galleryUrls[0]} 
+                        alt={venue.name} 
+                        fill 
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-gold/20 to-transparent" />
+                    )}
                   </div>
                   <div>
                     <h4 className="font-medium text-text-primary">{venue.name}</h4>

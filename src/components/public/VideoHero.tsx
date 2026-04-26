@@ -6,12 +6,24 @@ import { useState } from "react";
 import ScrollReveal from "@/components/motion/ScrollReveal";
 import MagneticButton from "@/components/motion/MagneticButton";
 import HeroAtmosphereCanvas from "@/components/webgl/HeroAtmosphereCanvas";
+import CustomSelect from "@/components/ui/CustomSelect";
 
 export default function VideoHero() {
   return (
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
-      {/* Background Gradient (video fallback) */}
-      <div className="absolute inset-0 gradient-hero" />
+      {/* Background Video */}
+      <div className="absolute inset-0 z-0">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="h-full w-full object-cover opacity-30"
+        >
+          <source src="https://www.pexels.com/download/video/34431086/" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-b from-bg/40 via-bg/80 to-bg" />
+      </div>
 
       {/* Soft spotlight overlay */}
       <div className="absolute inset-0 gradient-spotlight" />
@@ -38,12 +50,13 @@ export default function VideoHero() {
         {/* Headline */}
         <ScrollReveal delay={0.4} distance={50}>
           <h1 className="font-display text-5xl font-medium leading-[1.1] tracking-tight text-text-primary md:text-7xl lg:text-8xl">
-            Find the room
+            Where your
             <br />
-            <span className="italic text-gold">where the night</span>
+            <span className="italic text-gold">cinematic vision</span>
             <br />
-            begins.
+            finds its stage.
           </h1>
+
         </ScrollReveal>
 
         {/* Subheadline */}
@@ -60,10 +73,13 @@ export default function VideoHero() {
             <MagneticButton strength={15}>
               <Link
                 href="/venues"
-                className="group flex items-center gap-2 rounded-full bg-gold px-8 py-4 text-sm font-semibold uppercase tracking-wider text-bg transition-all duration-300 hover:bg-gold-light hover:shadow-[var(--shadow-glow)] no-underline"
+                className="group relative flex items-center gap-2 overflow-hidden rounded-full bg-gold px-8 py-4 text-sm font-semibold uppercase tracking-wider text-bg no-underline transition-all duration-300 hover:bg-gold-light hover:shadow-[var(--shadow-glow)]"
               >
-                Find a Venue
-                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                <div className="absolute inset-0 z-0 animate-[shimmer_3s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                <span className="relative z-10 flex items-center gap-2">
+                  Find a Venue
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </span>
               </Link>
             </MagneticButton>
             <MagneticButton strength={10}>
@@ -102,41 +118,43 @@ function SearchBar() {
   const [city, setCity] = useState("");
   const [eventType, setEventType] = useState("");
 
+  const locationOptions = [
+    { value: "", label: "Any location" },
+    { value: "Kuala Lumpur", label: "Kuala Lumpur" },
+    { value: "Petaling Jaya", label: "Petaling Jaya" },
+    { value: "Shah Alam", label: "Shah Alam" },
+  ];
+
+  const eventTypeOptions = [
+    { value: "", label: "Any event type" },
+    { value: "Wedding", label: "Wedding" },
+    { value: "Corporate Dinner", label: "Corporate Dinner" },
+    { value: "Product Launch", label: "Product Launch" },
+    { value: "Exhibition", label: "Exhibition" },
+    { value: "Seminar", label: "Seminar" },
+    { value: "Birthday", label: "Birthday" },
+  ];
+
   return (
     <div className="glass rounded-2xl border border-border-gold p-2">
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
         {/* Location */}
-        <div className="flex items-center gap-3 rounded-xl bg-bg-elevated/50 px-4 py-3">
-          <MapPin className="h-4 w-4 shrink-0 text-gold" />
-          <select
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            className="w-full bg-transparent text-sm text-text-primary outline-none placeholder:text-text-muted"
-          >
-            <option value="">Any location</option>
-            <option value="Kuala Lumpur">Kuala Lumpur</option>
-            <option value="Petaling Jaya">Petaling Jaya</option>
-            <option value="Shah Alam">Shah Alam</option>
-          </select>
-        </div>
+        <CustomSelect
+          options={locationOptions}
+          value={city}
+          onChange={setCity}
+          placeholder="Any location"
+          icon={<MapPin className="h-4 w-4 text-gold" />}
+        />
 
         {/* Event Type */}
-        <div className="flex items-center gap-3 rounded-xl bg-bg-elevated/50 px-4 py-3">
-          <Calendar className="h-4 w-4 shrink-0 text-gold" />
-          <select
-            value={eventType}
-            onChange={(e) => setEventType(e.target.value)}
-            className="w-full bg-transparent text-sm text-text-primary outline-none placeholder:text-text-muted"
-          >
-            <option value="">Any event type</option>
-            <option value="Wedding">Wedding</option>
-            <option value="Corporate Dinner">Corporate Dinner</option>
-            <option value="Product Launch">Product Launch</option>
-            <option value="Exhibition">Exhibition</option>
-            <option value="Seminar">Seminar</option>
-            <option value="Birthday">Birthday</option>
-          </select>
-        </div>
+        <CustomSelect
+          options={eventTypeOptions}
+          value={eventType}
+          onChange={setEventType}
+          placeholder="Any event type"
+          icon={<Calendar className="h-4 w-4 text-gold" />}
+        />
 
         {/* Search Button */}
         <Link

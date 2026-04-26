@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Building2, MapPin, Users, Plus, ArrowUpRight, Edit } from "lucide-react";
 import { getCurrentUser, getProviderIdForUser } from "@/lib/services/auth-service";
 import { getVenuesByProviderId } from "@/lib/services/venue-service";
@@ -32,23 +33,30 @@ export default function AdminVenuesPage() {
   }
 
   return (
-    <div className="max-w-6xl">
+    <div>
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
         <div>
           <h1 className="font-display text-4xl text-text-primary mb-2">Venues</h1>
           <p className="text-text-secondary">Manage your spaces listed on LumiSpace.</p>
         </div>
-        <button className="inline-flex items-center gap-2 bg-gold text-bg px-6 py-3 rounded-full text-sm font-semibold uppercase tracking-wider hover:bg-gold-light transition-all">
+        <Link
+          href="/admin/venues/new"
+          className="inline-flex items-center gap-2 bg-gold text-bg px-6 py-3 rounded-full text-sm font-semibold uppercase tracking-wider hover:bg-gold-light transition-all"
+        >
           <Plus className="w-4 h-4" /> Add New Venue
-        </button>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {venues.map((venue) => (
           <div key={venue.id} className="glass-strong rounded-2xl border border-border overflow-hidden flex flex-col">
-            {/* Image placeholder */}
-            <div className="aspect-video bg-bg-surface border-b border-border relative">
-              <div className="absolute inset-0 bg-gradient-to-tr from-bg/80 via-bg/20 to-transparent" />
+            {/* Venue Image */}
+            <div className="aspect-video bg-bg-surface border-b border-border relative overflow-hidden">
+              {venue.heroImageUrl ? (
+                <Image src={venue.heroImageUrl} alt={venue.name} fill className="object-cover" />
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-tr from-bg/80 via-bg/20 to-transparent" />
+              )}
               <div className="absolute top-4 right-4 px-2 py-1 rounded bg-bg/80 text-[10px] uppercase tracking-wider font-medium text-gold border border-border-gold backdrop-blur-sm">
                 {venue.status}
               </div>
@@ -76,9 +84,12 @@ export default function AdminVenuesPage() {
               </div>
 
               <div className="flex items-center gap-3 mt-auto pt-6 border-t border-border">
-                <button className="flex-1 inline-flex justify-center items-center gap-2 px-4 py-2 bg-bg-elevated border border-border rounded-lg text-sm text-text-primary hover:text-gold hover:border-gold transition-colors">
+                <Link
+                  href={`/admin/venues/${venue.id}/edit`}
+                  className="flex-1 inline-flex justify-center items-center gap-2 px-4 py-2 bg-bg-elevated border border-border rounded-lg text-sm text-text-primary hover:text-gold hover:border-gold transition-colors"
+                >
                   <Edit className="w-4 h-4" /> Edit
-                </button>
+                </Link>
                 <Link 
                   href={`/venues/${venue.slug}`}
                   target="_blank"
