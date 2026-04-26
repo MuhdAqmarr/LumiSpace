@@ -11,11 +11,11 @@ const ACCOUNTS_KEY = "lumispace_accounts";
 // Demo credentials
 const SEED_ACCOUNTS: { email: string; password: string; profile: Profile }[] = [
   {
-    email: "provider@lumispace.test",
+    email: "hello@lumieregrandhall.com",
     password: "password123",
     profile: {
       id: "user-001",
-      email: "provider@lumispace.test",
+      email: "hello@lumieregrandhall.com",
       fullName: "Aminah Hassan",
       phone: "+60 12-345 6789",
       role: "provider_admin",
@@ -24,11 +24,11 @@ const SEED_ACCOUNTS: { email: string; password: string; profile: Profile }[] = [
     },
   },
   {
-    email: "urban@lumispace.test",
+    email: "book@urbanloft.co",
     password: "password123",
     profile: {
       id: "user-002",
-      email: "urban@lumispace.test",
+      email: "book@urbanloft.co",
       fullName: "Rizal Ibrahim",
       phone: "+60 11-234 5678",
       role: "provider_admin",
@@ -37,11 +37,11 @@ const SEED_ACCOUNTS: { email: string; password: string; profile: Profile }[] = [
     },
   },
   {
-    email: "gardenia@lumispace.test",
+    email: "events@gardeniaestate.my",
     password: "password123",
     profile: {
       id: "user-003",
-      email: "gardenia@lumispace.test",
+      email: "events@gardeniaestate.my",
       fullName: "Siti Nurhaliza Kamal",
       phone: "+60 13-456 7890",
       role: "provider_admin",
@@ -63,6 +63,7 @@ const SEED_ACCOUNTS: { email: string; password: string; profile: Profile }[] = [
     },
   },
 ];
+
 
 function getStoredAccounts() {
   if (typeof window === "undefined") return SEED_ACCOUNTS;
@@ -157,13 +158,30 @@ export function isPlatformAdmin(): boolean {
   return user?.role === "platform_admin";
 }
 
+import { getProviderById } from "./provider-service";
+
 /** Get demo credentials for display on login page */
 export function getDemoCredentials() {
   const accounts = getStoredAccounts();
-  return accounts.slice(0, 4).map((a: any) => ({
-    email: a.email,
-    password: a.password,
-    providerName: a.profile.fullName.split(' ')[0] + "'s Space"
-  }));
+  return accounts.slice(0, 4).map((a: any) => {
+    let displayName = a.profile.fullName;
+    
+    if (a.profile.role === "platform_admin") {
+      displayName = "LumiSpace Admin";
+    } else {
+      const providerId = getProviderIdForUser(a.profile.id);
+      if (providerId) {
+        const provider = getProviderById(providerId);
+        if (provider) displayName = provider.brandName;
+      }
+    }
+
+    return {
+      email: a.email,
+      password: a.password,
+      providerName: displayName
+    };
+  });
 }
+
 
