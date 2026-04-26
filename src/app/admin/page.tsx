@@ -8,6 +8,7 @@ import { getProviderStats, getBookingsByProviderId, getBookings } from "@/lib/se
 import { getVenues } from "@/lib/services/venue-service";
 import { getProviders } from "@/lib/services/provider-service";
 import { Booking } from "@/lib/types";
+import Image from "next/image";
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState({ pending: 0, approved: 0, rejected: 0, total: 0, thisMonth: 0 });
@@ -33,13 +34,15 @@ export default function AdminDashboardPage() {
           pendingProviders: pendingProviders.length,
         });
 
-        // For Super Admin, we show pending providers first, then recent bookings
+        // For Super Admin, we show pending providers first, then all providers
         if (pendingProviders.length > 0) {
           setRecentBookings(pendingProviders.slice(0, 5));
         } else {
-          allBookings.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-          setRecentBookings(allBookings.slice(0, 5));
+          // If no pending, show latest registered providers
+          const sortedProviders = [...allProviders].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          setRecentBookings(sortedProviders.slice(0, 5));
         }
+
       } else {
 
         const providerId = getProviderIdForUser(user.id);
@@ -106,12 +109,12 @@ export default function AdminDashboardPage() {
             </div>
             <div className="glass-strong p-6 rounded-2xl border border-border">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-medium text-text-secondary">Pending Reviews</h3>
+                <h3 className="text-sm font-medium text-text-secondary">Pending Providers</h3>
                 <div className="w-8 h-8 rounded-full bg-warning/10 text-warning flex items-center justify-center">
                   <Clock className="w-4 h-4" />
                 </div>
               </div>
-              <p className="font-display text-4xl text-text-primary">{platformStats.pending}</p>
+              <p className="font-display text-4xl text-text-primary">{platformStats.pendingProviders}</p>
             </div>
           </>
         ) : (
@@ -160,11 +163,9 @@ export default function AdminDashboardPage() {
       <div className="glass-strong rounded-2xl border border-border overflow-hidden">
         <div className="p-6 border-b border-border flex items-center justify-between">
           <h2 className="font-display text-2xl text-text-primary">
-            {isSuperAdmin && recentBookings.length > 0 && (recentBookings[0] as any).brandName 
-              ? "Pending Provider Registrations" 
-              : "Recent Booking Requests"}
+            {isSuperAdmin ? "Provider Management" : "Recent Booking Requests"}
           </h2>
-          <Link href={isSuperAdmin ? (recentBookings.length > 0 && (recentBookings[0] as any).brandName ? "/admin/all-providers" : "/admin/all-bookings") : "/admin/bookings"} className="text-sm text-gold hover:underline">
+          <Link href={isSuperAdmin ? "/admin/all-providers" : "/admin/bookings"} className="text-sm text-gold hover:underline">
             View All
           </Link>
         </div>
@@ -175,21 +176,28 @@ export default function AdminDashboardPage() {
               const isProvider = (item as any).brandName !== undefined;
               
               if (isProvider) {
+                const isPending = item.status === "pending";
                 return (
                   <div key={item.id} className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-bg-elevated/50 transition-colors">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-bg border border-border flex items-center justify-center shrink-0">
-                        <Store className="w-6 h-6 text-gold" />
+                      <div className="w-12 h-12 rounded-xl bg-bg border border-border flex items-center justify-center shrink-0 relative overflow-hidden">
+                        {item.heroImageUrl ? (
+                          <Image src={item.heroImageUrl} alt={item.brandName} fill className="object-cover opacity-50" />
+                        ) : (
+                          <Store className="w-6 h-6 text-gold" />
+                        )}
                       </div>
                       <div>
                         <div className="flex items-center gap-3 mb-1">
                           <span className="font-display text-lg text-text-primary">{item.brandName}</span>
-                          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium border bg-warning/10 text-warning border-warning/20">
-                            New Registration
+                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-medium border ${
+                            isPending ? 'bg-warning/10 text-warning border-warning/20' : 'bg-success/10 text-success border-success/20'
+                          }`}>
+                            {isPending ? "Pending Review" : "Active Partner"}
                           </span>
                         </div>
                         <p className="text-sm text-text-secondary">
-                          Registered from <span className="text-text-primary">{item.city}, {item.country}</span> • Pending review
+                          {item.city}, {item.country} • Registered {new Date(item.createdAt).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
@@ -197,7 +205,7 @@ export default function AdminDashboardPage() {
                       href="/admin/all-providers"
                       className="shrink-0 px-6 py-2 bg-gold text-bg rounded-lg text-sm font-semibold uppercase tracking-wider hover:bg-gold-light transition-colors text-center"
                     >
-                      Review Provider
+                      {isPending ? "Review Registration" : "Manage Provider"}
                     </Link>
                   </div>
                 );
