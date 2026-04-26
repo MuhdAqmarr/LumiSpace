@@ -96,6 +96,8 @@ export default function FeaturedVenueGrid() {
     return (
       <Link
         href={`/venues/${venue.slug}`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         className={`group block overflow-hidden rounded-2xl border border-border bg-bg-surface transition-all duration-500 hover:border-border-gold hover:shadow-[var(--shadow-glow)] no-underline flex-shrink-0 ${is3D ? 'absolute top-0 left-1/2 -translate-x-1/2 w-[320px]' : 'w-[300px] md:w-[350px] relative snap-center'}`}
         style={is3D ? {
           transform: `rotateY(${index * ANGLE_STEP}deg) translateZ(${RADIUS}px)`,
@@ -221,8 +223,6 @@ export default function FeaturedVenueGrid() {
           <div
             className="hidden md:flex justify-center items-center h-[550px]"
             style={{ perspective: "1500px" }}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
           >
             <div
               ref={cylinderRef}
