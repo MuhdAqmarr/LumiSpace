@@ -13,7 +13,9 @@ import Image from "next/image";
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState({ pending: 0, approved: 0, rejected: 0, total: 0, thisMonth: 0 });
   const [platformStats, setPlatformStats] = useState({ providers: 0, venues: 0, bookings: 0, pendingProviders: 0 });
-  const [recentBookings, setRecentBookings] = useState<any[]>([]); // Can be bookings or providers
+  const [pendingProviders, setPendingProviders] = useState<Provider[]>([]);
+  const [activeProviders, setActiveProviders] = useState<Provider[]>([]);
+  const [recentBookings, setRecentBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
@@ -25,26 +27,20 @@ export default function AdminDashboardPage() {
         const allBookings = getBookings();
         const allVenues = getVenues();
         const allProviders = getProviders();
-        const pendingProviders = allProviders.filter(p => p.status === "pending");
+        const pending = allProviders.filter(p => p.status === "pending");
+        const active = allProviders.filter(p => p.status !== "pending")
+          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         
         setPlatformStats({
           providers: allProviders.length,
           venues: allVenues.length,
           bookings: allBookings.length,
-          pendingProviders: pendingProviders.length,
+          pendingProviders: pending.length,
         });
 
-        // For Super Admin, we show pending providers first, then all providers
-        if (pendingProviders.length > 0) {
-          setRecentBookings(pendingProviders.slice(0, 5));
-        } else {
-          // If no pending, show latest registered providers
-          const sortedProviders = [...allProviders].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-          setRecentBookings(sortedProviders.slice(0, 5));
-        }
-
+        setPendingProviders(pending);
+        setActiveProviders(active.slice(0, 5));
       } else {
-
         const providerId = getProviderIdForUser(user.id);
         if (providerId) {
           setStats(getProviderStats(providerId));
@@ -56,6 +52,7 @@ export default function AdminDashboardPage() {
     }
     setLoading(false);
   }, []);
+
 
   if (loading) {
     return (
@@ -159,25 +156,23 @@ export default function AdminDashboardPage() {
         )}
       </div>
 
-      {/* Recent Activity */}
-      <div className="glass-strong rounded-2xl border border-border overflow-hidden">
-        <div className="p-6 border-b border-border flex items-center justify-between">
-          <h2 className="font-display text-2xl text-text-primary">
-            {isSuperAdmin ? "Provider Management" : "Recent Booking Requests"}
-          </h2>
-          <Link href={isSuperAdmin ? "/admin/all-providers" : "/admin/bookings"} className="text-sm text-gold hover:underline">
-            View All
-          </Link>
-        </div>
-        
-        {recentBookings.length > 0 ? (
-          <div className="divide-y divide-border">
-            {recentBookings.map((item) => {
-              const isProvider = (item as any).brandName !== undefined;
-              
-              if (isProvider) {
-                const isPending = item.status === "pending";
-                return (
+      {/* Super Admin Activity Sections */}
+      {isSuperAdmin ? (
+        <div className="space-y-12">
+          {/* Pending Section - Only show if there are pending registrations */}
+          {pendingProviders.length > 0 && (
+            <div className="glass-strong rounded-2xl border border-border overflow-hidden">
+              <div className="p-6 border-b border-border bg-warning/5 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <h2 className="font-display text-2xl text-text-primary">Pending Registrations</h2>
+                  <span className="px-2 py-0.5 rounded-md bg-warning text-bg text-[10px] font-bold uppercase">Action Required</span>
+                </div>
+                <Link href="/admin/all-providers" className="text-sm text-gold hover:underline">
+                  View All
+                </Link>
+              </div>
+              <div className="divide-y divide-border">
+                {pendingProviders.map((item) => (
                   <div key={item.id} className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-bg-elevated/50 transition-colors">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-xl bg-bg border border-border flex items-center justify-center shrink-0 relative overflow-hidden">
@@ -190,11 +185,6 @@ export default function AdminDashboardPage() {
                       <div>
                         <div className="flex items-center gap-3 mb-1">
                           <span className="font-display text-lg text-text-primary">{item.brandName}</span>
-                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-medium border ${
-                            isPending ? 'bg-warning/10 text-warning border-warning/20' : 'bg-success/10 text-success border-success/20'
-                          }`}>
-                            {isPending ? "Pending Review" : "Active Partner"}
-                          </span>
                         </div>
                         <p className="text-sm text-text-secondary">
                           {item.city}, {item.country} • Registered {new Date(item.createdAt).toLocaleDateString()}
@@ -203,16 +193,75 @@ export default function AdminDashboardPage() {
                     </div>
                     <Link 
                       href="/admin/all-providers"
-                      className="shrink-0 px-6 py-2 bg-gold text-bg rounded-lg text-sm font-semibold uppercase tracking-wider hover:bg-gold-light transition-colors text-center"
+                      className="shrink-0 px-6 py-2 bg-gold text-bg rounded-lg text-sm font-semibold uppercase tracking-wider hover:bg-gold-light transition-colors text-center shadow-lg shadow-gold/20"
                     >
-                      {isPending ? "Review Registration" : "Manage Provider"}
+                      Review Registration
                     </Link>
                   </div>
-                );
-              }
+                ))}
+              </div>
+            </div>
+          )}
 
-              const booking = item as Booking;
-              return (
+          {/* Recent Active Providers */}
+          <div className="glass-strong rounded-2xl border border-border overflow-hidden">
+            <div className="p-6 border-b border-border flex items-center justify-between">
+              <h2 className="font-display text-2xl text-text-primary">Recently Onboarded Partners</h2>
+              <Link href="/admin/all-providers" className="text-sm text-gold hover:underline">
+                Manage All
+              </Link>
+            </div>
+            <div className="divide-y divide-border">
+              {activeProviders.length > 0 ? (
+                activeProviders.map((item) => (
+                  <div key={item.id} className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-bg-elevated/50 transition-colors">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-bg border border-border flex items-center justify-center shrink-0 relative overflow-hidden">
+                        {item.heroImageUrl ? (
+                          <Image src={item.heroImageUrl} alt={item.brandName} fill className="object-cover opacity-30" />
+                        ) : (
+                          <Store className="w-6 h-6 text-gold" />
+                        )}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-3 mb-1">
+                          <span className="font-display text-lg text-text-primary">{item.brandName}</span>
+                          <span className="px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-medium border bg-success/10 text-success border-success/20">
+                            Active Partner
+                          </span>
+                        </div>
+                        <p className="text-sm text-text-secondary">
+                          {item.city}, {item.country} • Partner since {new Date(item.createdAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                    <Link 
+                      href="/admin/all-providers"
+                      className="shrink-0 px-6 py-2 border border-border-gold rounded-lg text-sm text-gold hover:bg-gold hover:text-bg transition-colors text-center"
+                    >
+                      Manage Provider
+                    </Link>
+                  </div>
+                ))
+              ) : (
+                <div className="p-12 text-center text-text-secondary">No active partners yet.</div>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : (
+        /* Provider Admin Activity - Booking Focus */
+        <div className="glass-strong rounded-2xl border border-border overflow-hidden">
+          <div className="p-6 border-b border-border flex items-center justify-between">
+            <h2 className="font-display text-2xl text-text-primary">Recent Booking Requests</h2>
+            <Link href="/admin/bookings" className="text-sm text-gold hover:underline">
+              View All
+            </Link>
+          </div>
+          
+          {recentBookings.length > 0 ? (
+            <div className="divide-y divide-border">
+              {recentBookings.map((booking) => (
                 <div key={booking.id} className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-bg-elevated/50 transition-colors">
                   <div>
                     <div className="flex items-center gap-3 mb-1">
@@ -236,16 +285,17 @@ export default function AdminDashboardPage() {
                     Review Details
                   </Link>
                 </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="p-12 text-center flex flex-col items-center">
-            <AlertCircle className="w-8 h-8 text-text-muted mb-3" />
-            <p className="text-text-secondary">No recent activity found.</p>
-          </div>
-        )}
-      </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-12 text-center flex flex-col items-center">
+              <AlertCircle className="w-8 h-8 text-text-muted mb-3" />
+              <p className="text-text-secondary">No recent booking activity found.</p>
+            </div>
+          )}
+        </div>
+      )}
+
     </div>
   );
 }
