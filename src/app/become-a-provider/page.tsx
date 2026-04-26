@@ -393,18 +393,17 @@ export default function BecomeProviderPage() {
                     {errors.firstVenueDescription && <p className="mt-1 text-xs text-danger">{errors.firstVenueDescription.message}</p>}
                   </div>
 
-                  <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-text-secondary mb-2">Venue Hero Image URL *</label>
-                      <input 
-                        type="url"
-                        {...register("venueHeroImageUrl")}
-                        placeholder="https://images.unsplash.com/venue-hero..."
-                        className={`w-full bg-bg border ${errors.venueHeroImageUrl ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
-                      />
-                      {errors.venueHeroImageUrl && <p className="mt-1 text-xs text-danger">{errors.venueHeroImageUrl.message}</p>}
-                    </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-text-secondary mb-2">Venue Hero Image URL *</label>
+                    <input 
+                      type="url"
+                      {...register("venueHeroImageUrl")}
+                      placeholder="https://images.unsplash.com/venue-hero..."
+                      className={`w-full bg-bg border ${errors.venueHeroImageUrl ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
+                    />
+                    {errors.venueHeroImageUrl && <p className="mt-1 text-xs text-danger">{errors.venueHeroImageUrl.message}</p>}
                   </div>
+
                 </div>
               </div>
 
