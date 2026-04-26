@@ -49,10 +49,10 @@ export default function NewVenuePage() {
           : [],
       });
 
-      toast({ title: "Venue Created!", message: "Your new venue is saved as a draft.", type: "success" });
+      toast("Venue created! It has been saved as a draft.", "success");
       router.push("/admin/venues");
     } catch (err) {
-      toast({ title: "Error", message: "Failed to create venue. Please try again.", type: "error" });
+      toast("Failed to create venue. Please try again.", "error");
     } finally {
       setIsSubmitting(false);
     }

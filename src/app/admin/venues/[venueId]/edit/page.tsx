@@ -57,10 +57,10 @@ export default function EditVenuePage() {
           : [],
       });
 
-      toast({ title: "Venue Updated!", message: "Your changes have been saved.", type: "success" });
+      toast("Venue saved! Your changes have been applied.", "success");
       router.push("/admin/venues");
     } catch {
-      toast({ title: "Error", message: "Failed to save changes. Please try again.", type: "error" });
+      toast("Failed to save changes. Please try again.", "error");
     } finally {
       setIsSubmitting(false);
     }
