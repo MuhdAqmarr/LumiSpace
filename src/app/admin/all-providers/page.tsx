@@ -1,19 +1,35 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Store, MapPin, Mail, Phone, Globe, CheckCircle2, Clock, XCircle } from "lucide-react";
-import { getProviders } from "@/lib/services/provider-service";
+import { Store, MapPin, Mail, Phone, Globe, CheckCircle2, Clock, XCircle, ShieldCheck, ShieldAlert } from "lucide-react";
+import { getProviders, updateProviderStatus } from "@/lib/services/provider-service";
 import { Provider } from "@/lib/types";
 import Image from "next/image";
+import { useToast } from "@/components/ui/Toast";
 
 export default function AllProvidersPage() {
   const [providers, setProviders] = useState<Provider[]>([]);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  const loadProviders = () => {
+    setProviders(getProviders());
+  };
 
   useEffect(() => {
-    setProviders(getProviders());
+    loadProviders();
     setLoading(false);
   }, []);
+
+  const handleUpdateStatus = (id: string, status: "approved" | "pending" | "suspended", name: string) => {
+    const updated = updateProviderStatus(id, status);
+    if (updated) {
+      toast(`Provider "${name}" has been ${status}.`, status === "approved" ? "success" : "warning");
+      loadProviders();
+    } else {
+      toast("Failed to update provider status.", "error");
+    }
+  };
 
   if (loading) {
     return (
@@ -37,7 +53,7 @@ export default function AllProvidersPage() {
       </div>
 
       {/* Summary */}
-      <div className="grid grid-cols-3 gap-6 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
         {(["approved", "pending", "suspended"] as const).map((status) => {
           const count = providers.filter(p => p.status === status).length;
           const cfg = statusConfig[status];
@@ -64,7 +80,7 @@ export default function AllProvidersPage() {
             const cfg = statusConfig[provider.status as keyof typeof statusConfig] || statusConfig.pending;
             const Icon = cfg.icon;
             return (
-              <div key={provider.id} className="p-6 flex flex-col md:flex-row md:items-center gap-6 hover:bg-bg-elevated/50 transition-colors">
+              <div key={provider.id} className="p-6 flex flex-col xl:flex-row xl:items-center gap-6 hover:bg-bg-elevated/50 transition-colors">
                 {/* Logo */}
                 <div className="w-16 h-16 rounded-xl bg-bg-elevated border border-border flex items-center justify-center shrink-0 relative overflow-hidden">
                   {provider.logoUrl ? (
@@ -87,16 +103,41 @@ export default function AllProvidersPage() {
                     <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" />{provider.city}, {provider.country}</span>
                     <span className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" />{provider.contactEmail}</span>
                     <span className="flex items-center gap-1.5"><Phone className="w-3.5 h-3.5" />{provider.contactPhone}</span>
-                    {provider.websiteUrl && (
-                      <span className="flex items-center gap-1.5"><Globe className="w-3.5 h-3.5" />{provider.websiteUrl}</span>
-                    )}
                   </div>
                 </div>
 
+                {/* Actions */}
+                <div className="flex flex-wrap items-center gap-3">
+                  {provider.status !== "approved" && (
+                    <button
+                      onClick={() => handleUpdateStatus(provider.id, "approved", provider.brandName)}
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-success/10 text-success border border-success/30 rounded-xl text-sm font-medium hover:bg-success hover:text-white transition-all"
+                    >
+                      <ShieldCheck className="w-4 h-4" /> Approve
+                    </button>
+                  )}
+                  {provider.status !== "suspended" && (
+                    <button
+                      onClick={() => handleUpdateStatus(provider.id, "suspended", provider.brandName)}
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-danger/10 text-danger border border-danger/30 rounded-xl text-sm font-medium hover:bg-danger hover:text-white transition-all"
+                    >
+                      <ShieldAlert className="w-4 h-4" /> Suspend
+                    </button>
+                  )}
+                  {provider.status === "suspended" && (
+                    <button
+                      onClick={() => handleUpdateStatus(provider.id, "pending", provider.brandName)}
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-warning/10 text-warning border border-warning/30 rounded-xl text-sm font-medium hover:bg-warning hover:text-white transition-all"
+                    >
+                      <Clock className="w-4 h-4" /> Set Pending
+                    </button>
+                  )}
+                </div>
+
                 {/* ID & Date */}
-                <div className="shrink-0 text-right">
-                  <p className="font-mono text-xs text-text-muted">{provider.id}</p>
-                  <p className="text-xs text-text-muted mt-1">Since {new Date(provider.createdAt).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}</p>
+                <div className="shrink-0 text-right hidden md:block">
+                  <p className="font-mono text-[10px] text-text-muted">{provider.id}</p>
+                  <p className="text-[10px] text-text-muted mt-1">Since {new Date(provider.createdAt).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}</p>
                 </div>
               </div>
             );
@@ -106,3 +147,4 @@ export default function AllProvidersPage() {
     </div>
   );
 }
+

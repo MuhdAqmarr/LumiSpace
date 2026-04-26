@@ -73,3 +73,11 @@ export function updateProvider(
   saveProviders(providers);
   return providers[index];
 }
+
+export function updateProviderStatus(
+  id: string,
+  status: "approved" | "pending" | "suspended"
+): Provider | undefined {
+  return updateProvider(id, { status });
+}
+
