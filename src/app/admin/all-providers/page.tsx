@@ -97,6 +97,11 @@ export default function AllProvidersPage() {
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-4 mb-2">
+                    <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted">{provider.id}</p>
+                    <span className="w-1 h-1 rounded-full bg-border" />
+                    <p className="text-[10px] text-text-muted">Since {new Date(provider.createdAt).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}</p>
+                  </div>
                   <div className="flex flex-wrap items-center gap-3 mb-1">
                     <span className="font-display text-lg text-text-primary">{provider.brandName}</span>
                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-medium border ${cfg.cls}`}>
@@ -142,13 +147,6 @@ export default function AllProvidersPage() {
                       <Clock className="w-4 h-4" /> Set Pending
                     </button>
                   )}
-                </div>
-
-
-                {/* ID & Date */}
-                <div className="shrink-0 text-right hidden md:block">
-                  <p className="font-mono text-[10px] text-text-muted">{provider.id}</p>
-                  <p className="text-[10px] text-text-muted mt-1">Since {new Date(provider.createdAt).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}</p>
                 </div>
               </div>
             );
