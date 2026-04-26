@@ -51,8 +51,9 @@ export default function AdminLoginPage() {
   };
 
   const useDemoAccount = (email: string) => {
+    const account = demoAccounts.find(a => a.email === email);
     setValue("email", email);
-    setValue("password", "password123");
+    setValue("password", account?.password || "password123");
   };
 
   return (
