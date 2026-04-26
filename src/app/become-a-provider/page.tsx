@@ -44,7 +44,8 @@ export default function BecomeProviderPage() {
       capacityMax: undefined,
       priceFrom: undefined,
       firstVenueDescription: "",
-      heroImageUrl: "",
+      brandHeaderImageUrl: "",
+      venueHeroImageUrl: "",
       heroVideoUrl: "",
       logoUrl: "",
     },
@@ -77,6 +78,7 @@ export default function BecomeProviderPage() {
         city: data.city,
         country: data.country,
         logoUrl: data.logoUrl || undefined,
+        heroImageUrl: data.brandHeaderImageUrl || undefined,
         themeJson: { webglPreset: "gold", accentColor: "#C8A96A" }, // default theme
         ownerId: profile.id,
         story: "A new standard for premium spaces.",
@@ -99,7 +101,7 @@ export default function BecomeProviderPage() {
         amenities: ["Wi-Fi", "Parking"], // defaults
         rules: ["No smoking indoors"], // defaults
         eventTypes: ["Corporate Event", "Private Dinner", "Wedding"], // defaults
-        heroImageUrl: data.heroImageUrl || undefined,
+        heroImageUrl: data.venueHeroImageUrl || undefined,
         heroVideoUrl: data.heroVideoUrl || undefined,
         galleryUrls: [],
       });
@@ -284,7 +286,19 @@ export default function BecomeProviderPage() {
                       </div>
                     </div>
                   </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-text-secondary mb-2">Brand Header Image URL (Optional)</label>
+                    <input 
+                      type="url"
+                      {...register("brandHeaderImageUrl")}
+                      placeholder="https://images.unsplash.com/brand-header..."
+                      className={`w-full bg-bg border ${errors.brandHeaderImageUrl ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
+                    />
+                    <p className="mt-2 text-[10px] text-text-muted italic">This high-quality image will be the face of your brand profile.</p>
+                  </div>
                 </div>
+
               </div>
 
               {/* Section 2: First Venue */}
@@ -385,11 +399,11 @@ export default function BecomeProviderPage() {
                       <label className="block text-sm font-medium text-text-secondary mb-2">Venue Hero Image URL *</label>
                       <input 
                         type="url"
-                        {...register("heroImageUrl")}
-                        placeholder="https://images.unsplash.com/..."
-                        className={`w-full bg-bg border ${errors.heroImageUrl ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
+                        {...register("venueHeroImageUrl")}
+                        placeholder="https://images.unsplash.com/venue-hero..."
+                        className={`w-full bg-bg border ${errors.venueHeroImageUrl ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
                       />
-                      {errors.heroImageUrl && <p className="mt-1 text-xs text-danger">{errors.heroImageUrl.message}</p>}
+                      {errors.venueHeroImageUrl && <p className="mt-1 text-xs text-danger">{errors.venueHeroImageUrl.message}</p>}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-text-secondary mb-2">Brand Logo URL (Optional)</label>
@@ -397,7 +411,7 @@ export default function BecomeProviderPage() {
                         type="url"
                         {...register("logoUrl")}
                         placeholder="https://brand.com/logo.png"
-                        className={`w-full bg-bg border ${errors.logoUrl ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
+                        className={`w-full bg-bg border border-border rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
                       />
                     </div>
                   </div>

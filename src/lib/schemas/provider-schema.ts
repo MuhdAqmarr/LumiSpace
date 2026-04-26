@@ -82,11 +82,13 @@ export const providerRegistrationSchema = z.object({
     .min(20, "Venue description must be at least 20 characters")
     .max(500, "Venue description must be under 500 characters"),
 
-  // Branding (optional URLs for MVP)
-  heroImageUrl: z.string().optional().or(z.literal("")),
+  // Branding
+  brandHeaderImageUrl: z.string().optional().or(z.literal("")),
+  venueHeroImageUrl: z.string().optional().or(z.literal("")),
   heroVideoUrl: z.string().optional().or(z.literal("")),
   logoUrl: z.string().optional().or(z.literal("")),
 });
+
 
 export type ProviderRegistrationFormValues = z.infer<
   typeof providerRegistrationSchema
