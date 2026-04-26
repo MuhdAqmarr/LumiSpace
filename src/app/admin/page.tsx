@@ -2,28 +2,44 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Building2, CalendarDays, CheckCircle2, Clock, AlertCircle } from "lucide-react";
-import { getCurrentUser, getProviderIdForUser } from "@/lib/services/auth-service";
-import { getProviderStats, getBookingsByProviderId } from "@/lib/services/booking-service";
+import { Building2, CalendarDays, CheckCircle2, Clock, AlertCircle, Store } from "lucide-react";
+import { getCurrentUser, getProviderIdForUser, isPlatformAdmin } from "@/lib/services/auth-service";
+import { getProviderStats, getBookingsByProviderId, getBookings } from "@/lib/services/booking-service";
+import { getVenues } from "@/lib/services/venue-service";
+import { getProviders } from "@/lib/services/provider-service";
 import { Booking } from "@/lib/types";
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState({ pending: 0, approved: 0, rejected: 0, total: 0, thisMonth: 0 });
+  const [platformStats, setPlatformStats] = useState({ providers: 0, venues: 0, bookings: 0, pending: 0 });
   const [recentBookings, setRecentBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
   useEffect(() => {
     const user = getCurrentUser();
     if (user) {
-      const providerId = getProviderIdForUser(user.id);
-      if (providerId) {
-        setStats(getProviderStats(providerId));
-        
-        // Get recent bookings
-        const allBookings = getBookingsByProviderId(providerId);
-        // Sort by createdAt descending
+      if (user.role === "platform_admin") {
+        setIsSuperAdmin(true);
+        const allBookings = getBookings();
+        const allVenues = getVenues();
+        const allProviders = getProviders();
+        setPlatformStats({
+          providers: allProviders.length,
+          venues: allVenues.length,
+          bookings: allBookings.length,
+          pending: allBookings.filter(b => b.status === "pending").length,
+        });
         allBookings.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         setRecentBookings(allBookings.slice(0, 5));
+      } else {
+        const providerId = getProviderIdForUser(user.id);
+        if (providerId) {
+          setStats(getProviderStats(providerId));
+          const allBookings = getBookingsByProviderId(providerId);
+          allBookings.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          setRecentBookings(allBookings.slice(0, 5));
+        }
       }
     }
     setLoading(false);
@@ -41,57 +57,102 @@ export default function AdminDashboardPage() {
     <div>
       <div className="mb-10">
         <h1 className="font-display text-4xl text-text-primary mb-2">Dashboard Overview</h1>
-        <p className="text-text-secondary">Welcome back. Here&apos;s what&apos;s happening with your venues today.</p>
+        <p className="text-text-secondary">
+          {isSuperAdmin
+            ? "Platform-wide overview of LumiSpace."
+            : "Welcome back. Here's what's happening with your venues today."}
+        </p>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        <div className="glass-strong p-6 rounded-2xl border border-border">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-medium text-text-secondary">Pending Requests</h3>
-            <div className="w-8 h-8 rounded-full bg-warning/10 text-warning flex items-center justify-center">
-              <Clock className="w-4 h-4" />
+        {isSuperAdmin ? (
+          <>
+            <div className="glass-strong p-6 rounded-2xl border border-border">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-medium text-text-secondary">Total Providers</h3>
+                <div className="w-8 h-8 rounded-full bg-gold/10 text-gold flex items-center justify-center">
+                  <Store className="w-4 h-4" />
+                </div>
+              </div>
+              <p className="font-display text-4xl text-text-primary">{platformStats.providers}</p>
             </div>
-          </div>
-          <p className="font-display text-4xl text-text-primary">{stats.pending}</p>
-        </div>
+            <div className="glass-strong p-6 rounded-2xl border border-border">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-medium text-text-secondary">Total Venues</h3>
+                <div className="w-8 h-8 rounded-full bg-gold/10 text-gold flex items-center justify-center">
+                  <Building2 className="w-4 h-4" />
+                </div>
+              </div>
+              <p className="font-display text-4xl text-text-primary">{platformStats.venues}</p>
+            </div>
+            <div className="glass-strong p-6 rounded-2xl border border-border">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-medium text-text-secondary">Total Bookings</h3>
+                <div className="w-8 h-8 rounded-full bg-gold/10 text-gold flex items-center justify-center">
+                  <CalendarDays className="w-4 h-4" />
+                </div>
+              </div>
+              <p className="font-display text-4xl text-text-primary">{platformStats.bookings}</p>
+            </div>
+            <div className="glass-strong p-6 rounded-2xl border border-border">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-medium text-text-secondary">Pending Reviews</h3>
+                <div className="w-8 h-8 rounded-full bg-warning/10 text-warning flex items-center justify-center">
+                  <Clock className="w-4 h-4" />
+                </div>
+              </div>
+              <p className="font-display text-4xl text-text-primary">{platformStats.pending}</p>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="glass-strong p-6 rounded-2xl border border-border">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-medium text-text-secondary">Pending Requests</h3>
+                <div className="w-8 h-8 rounded-full bg-warning/10 text-warning flex items-center justify-center">
+                  <Clock className="w-4 h-4" />
+                </div>
+              </div>
+              <p className="font-display text-4xl text-text-primary">{stats.pending}</p>
+            </div>
+            <div className="glass-strong p-6 rounded-2xl border border-border">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-medium text-text-secondary">Approved Events</h3>
+                <div className="w-8 h-8 rounded-full bg-success/10 text-success flex items-center justify-center">
+                  <CheckCircle2 className="w-4 h-4" />
+                </div>
+              </div>
+              <p className="font-display text-4xl text-text-primary">{stats.approved}</p>
+            </div>
+            <div className="glass-strong p-6 rounded-2xl border border-border">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-medium text-text-secondary">Total Bookings</h3>
+                <div className="w-8 h-8 rounded-full bg-gold/10 text-gold flex items-center justify-center">
+                  <CalendarDays className="w-4 h-4" />
+                </div>
+              </div>
+              <p className="font-display text-4xl text-text-primary">{stats.total}</p>
+            </div>
+            <div className="glass-strong p-6 rounded-2xl border border-border">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-medium text-text-secondary">New This Month</h3>
+                <div className="w-8 h-8 rounded-full bg-gold/10 text-gold flex items-center justify-center">
+                  <Building2 className="w-4 h-4" />
+                </div>
+              </div>
+              <p className="font-display text-4xl text-text-primary">{stats.thisMonth}</p>
+            </div>
+          </>
+        )}
 
-        <div className="glass-strong p-6 rounded-2xl border border-border">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-medium text-text-secondary">Approved Events</h3>
-            <div className="w-8 h-8 rounded-full bg-success/10 text-success flex items-center justify-center">
-              <CheckCircle2 className="w-4 h-4" />
-            </div>
-          </div>
-          <p className="font-display text-4xl text-text-primary">{stats.approved}</p>
-        </div>
-
-        <div className="glass-strong p-6 rounded-2xl border border-border">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-medium text-text-secondary">Total Bookings</h3>
-            <div className="w-8 h-8 rounded-full bg-gold/10 text-gold flex items-center justify-center">
-              <CalendarDays className="w-4 h-4" />
-            </div>
-          </div>
-          <p className="font-display text-4xl text-text-primary">{stats.total}</p>
-        </div>
-
-        <div className="glass-strong p-6 rounded-2xl border border-border">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-medium text-text-secondary">New This Month</h3>
-            <div className="w-8 h-8 rounded-full bg-gold/10 text-gold flex items-center justify-center">
-              <Building2 className="w-4 h-4" />
-            </div>
-          </div>
-          <p className="font-display text-4xl text-text-primary">{stats.thisMonth}</p>
-        </div>
       </div>
 
       {/* Recent Bookings */}
       <div className="glass-strong rounded-2xl border border-border overflow-hidden">
         <div className="p-6 border-b border-border flex items-center justify-between">
           <h2 className="font-display text-2xl text-text-primary">Recent Booking Requests</h2>
-          <Link href="/admin/bookings" className="text-sm text-gold hover:underline">
+          <Link href={isSuperAdmin ? "/admin/all-bookings" : "/admin/bookings"} className="text-sm text-gold hover:underline">
             View All
           </Link>
         </div>

@@ -48,6 +48,19 @@ const DEMO_ACCOUNTS: { email: string; password: string; profile: Profile }[] = [
       updatedAt: "2026-03-01T00:00:00Z",
     },
   },
+  {
+    email: "admin@lumispace.test",
+    password: "admin123",
+    profile: {
+      id: "user-superadmin",
+      email: "admin@lumispace.test",
+      fullName: "LumiSpace Admin",
+      phone: "+60 3-0000 0000",
+      role: "platform_admin" as UserRole,
+      createdAt: "2025-01-01T00:00:00Z",
+      updatedAt: "2026-01-01T00:00:00Z",
+    },
+  },
 ];
 
 export interface LoginResult {
@@ -96,6 +109,11 @@ export function getProviderIdForUser(userId: string): string | undefined {
     "user-003": "prov-003",
   };
   return mapping[userId];
+}
+
+export function isPlatformAdmin(): boolean {
+  const user = getCurrentUser();
+  return user?.role === "platform_admin";
 }
 
 /** Get demo credentials for display on login page */

@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, CalendarDays, Building2, Settings, LogOut, Sparkles, Menu, X } from "lucide-react";
-import { isAuthenticated, getCurrentUser, logout } from "@/lib/services/auth-service";
+import { LayoutDashboard, CalendarDays, Building2, Settings, LogOut, Sparkles, Menu, X, Store } from "lucide-react";
+import { isAuthenticated, getCurrentUser, logout, isPlatformAdmin } from "@/lib/services/auth-service";
 
 export default function AdminLayout({
   children,
@@ -16,7 +16,8 @@ export default function AdminLayout({
   
   const [mounted, setMounted] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [user, setUser] = useState<{ fullName: string; email: string } | null>(null);
+  const [user, setUser] = useState<{ fullName: string; email: string; role: string } | null>(null);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
   // Is this the login page?
   const isLoginPage = pathname === "/admin/login";
@@ -28,7 +29,10 @@ export default function AdminLayout({
         router.push("/admin/login");
       } else {
         const u = getCurrentUser();
-        if (u) setUser({ fullName: u.fullName, email: u.email });
+        if (u) {
+          setUser({ fullName: u.fullName, email: u.email, role: u.role });
+          setIsSuperAdmin(u.role === "platform_admin");
+        }
       }
     }
   }, [pathname, isLoginPage, router]);
@@ -51,12 +55,19 @@ export default function AdminLayout({
     return null;
   }
 
-  const navLinks = [
-    { href: "/admin", label: "Overview", icon: LayoutDashboard },
-    { href: "/admin/bookings", label: "Bookings", icon: CalendarDays },
-    { href: "/admin/venues", label: "Venues", icon: Building2 },
-    { href: "/admin/provider-profile", label: "Provider Profile", icon: Settings },
-  ];
+  const navLinks = isSuperAdmin
+    ? [
+        { href: "/admin", label: "Overview", icon: LayoutDashboard },
+        { href: "/admin/all-providers", label: "All Providers", icon: Store },
+        { href: "/admin/all-venues", label: "All Venues", icon: Building2 },
+        { href: "/admin/all-bookings", label: "All Bookings", icon: CalendarDays },
+      ]
+    : [
+        { href: "/admin", label: "Overview", icon: LayoutDashboard },
+        { href: "/admin/bookings", label: "Bookings", icon: CalendarDays },
+        { href: "/admin/venues", label: "Venues", icon: Building2 },
+        { href: "/admin/provider-profile", label: "Provider Profile", icon: Settings },
+      ];
 
   return (
     <div className="min-h-screen bg-bg flex">
@@ -93,7 +104,7 @@ export default function AdminLayout({
           <p className="text-sm font-medium text-text-primary truncate">{user?.fullName}</p>
           <p className="text-xs text-text-muted truncate mt-1">{user?.email}</p>
           <div className="mt-3 inline-flex px-2 py-1 rounded bg-gold/10 border border-gold/20 text-[10px] uppercase tracking-wider text-gold">
-            Provider Admin
+            {isSuperAdmin ? "Platform Admin" : "Provider Admin"}
           </div>
         </div>
 
