@@ -25,6 +25,13 @@ export default function AdminLayout({
 
   useEffect(() => {
     setMounted(true);
+
+    // Auto-logout if user manually goes back to login page
+    if (isLoginPage && isAuthenticated()) {
+      logout();
+      setUser(null);
+    }
+
     if (!isLoginPage) {
       if (!isAuthenticated()) {
         router.replace("/admin/login");
