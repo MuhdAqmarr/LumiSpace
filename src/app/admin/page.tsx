@@ -7,7 +7,7 @@ import { getCurrentUser, getProviderIdForUser, isPlatformAdmin } from "@/lib/ser
 import { getProviderStats, getBookingsByProviderId, getBookings } from "@/lib/services/booking-service";
 import { getVenues } from "@/lib/services/venue-service";
 import { getProviders } from "@/lib/services/provider-service";
-import { Booking } from "@/lib/types";
+import { Booking, Provider } from "@/lib/types";
 import Image from "next/image";
 
 export default function AdminDashboardPage() {
