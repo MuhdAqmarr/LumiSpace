@@ -32,9 +32,7 @@ export function getPublishedVenues(): Venue[] {
   return getStoredVenues().filter((v) => v.status === "published");
 }
 
-export function getVenues(): Venue[] {
-  return getStoredVenues();
-}
+
 
 export function getVenueBySlug(slug: string): Venue | undefined {
   return getStoredVenues().find((v) => v.slug === slug);
