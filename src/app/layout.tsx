@@ -4,6 +4,7 @@ import GsapProvider from "@/components/motion/GsapProvider";
 import ToastProvider from "@/components/ui/Toast";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://demo-lumispace.netlify.app"),
   title: "LumiSpace — Premium Venue Booking Marketplace",
   description:
     "Discover cinematic halls, gardens, rooftops, and private spaces from trusted venue providers. Book your perfect event space today.",
@@ -16,7 +17,30 @@ export const metadata: Metadata = {
     "Malaysia",
     "KL venue",
   ],
+  openGraph: {
+    title: "LumiSpace — Premium Venue Booking Marketplace",
+    description: "Discover cinematic halls, gardens, rooftops, and private spaces from trusted venue providers across Malaysia.",
+    url: "https://demo-lumispace.netlify.app",
+    siteName: "LumiSpace",
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "LumiSpace — Premium Venue Marketplace",
+      },
+    ],
+    locale: "en_MY",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "LumiSpace — Premium Venue Booking Marketplace",
+    description: "Discover cinematic halls, gardens, rooftops, and private spaces from trusted venue providers across Malaysia.",
+    images: ["/opengraph-image.png"],
+  },
 };
+
 
 export default function RootLayout({
   children,
