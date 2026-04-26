@@ -6,9 +6,10 @@
 import { Profile, UserRole } from "@/lib/types";
 
 const AUTH_KEY = "lumispace_auth";
+const ACCOUNTS_KEY = "lumispace_accounts";
 
 // Demo credentials
-const DEMO_ACCOUNTS: { email: string; password: string; profile: Profile }[] = [
+const SEED_ACCOUNTS: { email: string; password: string; profile: Profile }[] = [
   {
     email: "provider@lumispace.test",
     password: "password123",
@@ -63,15 +64,35 @@ const DEMO_ACCOUNTS: { email: string; password: string; profile: Profile }[] = [
   },
 ];
 
+function getStoredAccounts() {
+  if (typeof window === "undefined") return SEED_ACCOUNTS;
+  const stored = localStorage.getItem(ACCOUNTS_KEY);
+  if (!stored) {
+    localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(SEED_ACCOUNTS));
+    return SEED_ACCOUNTS;
+  }
+  return JSON.parse(stored);
+}
+
+function saveAccounts(accounts: any[]) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
+}
+
+
 export interface LoginResult {
   success: boolean;
   error?: string;
   profile?: Profile;
 }
 
+import { getProviders } from "./provider-service";
+import { generateId } from "@/lib/utils";
+
 export function login(email: string, password: string): LoginResult {
-  const account = DEMO_ACCOUNTS.find(
-    (a) => a.email.toLowerCase() === email.toLowerCase() && a.password === password
+  const accounts = getStoredAccounts();
+  const account = accounts.find(
+    (a: any) => a.email.toLowerCase() === email.toLowerCase() && a.password === password
   );
 
   if (!account) {
@@ -83,6 +104,30 @@ export function login(email: string, password: string): LoginResult {
   }
 
   return { success: true, profile: account.profile };
+}
+
+export function registerUser(email: string, password: string, fullName: string, phone: string, role: UserRole = "provider_admin"): Profile {
+  const accounts = getStoredAccounts();
+  const now = new Date().toISOString();
+  
+  const newProfile: Profile = {
+    id: `user-${generateId()}`,
+    email,
+    fullName,
+    phone,
+    role,
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  accounts.push({
+    email,
+    password,
+    profile: newProfile
+  });
+
+  saveAccounts(accounts);
+  return newProfile;
 }
 
 export function logout(): void {
@@ -102,13 +147,9 @@ export function isAuthenticated(): boolean {
 }
 
 export function getProviderIdForUser(userId: string): string | undefined {
-  // Map user IDs to provider IDs
-  const mapping: Record<string, string> = {
-    "user-001": "prov-001",
-    "user-002": "prov-002",
-    "user-003": "prov-003",
-  };
-  return mapping[userId];
+  // Dynamic lookup from provider service
+  const providers = getProviders();
+  return providers.find(p => p.ownerId === userId)?.id;
 }
 
 export function isPlatformAdmin(): boolean {
@@ -118,14 +159,11 @@ export function isPlatformAdmin(): boolean {
 
 /** Get demo credentials for display on login page */
 export function getDemoCredentials() {
-  return DEMO_ACCOUNTS.map((a) => ({
+  const accounts = getStoredAccounts();
+  return accounts.slice(0, 4).map((a: any) => ({
     email: a.email,
     password: a.password,
-    providerName:
-      a.profile.id === "user-001"
-        ? "Lumiere Grand Hall"
-        : a.profile.id === "user-002"
-          ? "Urban Loft Collective"
-          : "Gardenia Event Estate",
+    providerName: a.profile.fullName.split(' ')[0] + "'s Space"
   }));
 }
+

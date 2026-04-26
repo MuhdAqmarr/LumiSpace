@@ -29,6 +29,8 @@ export default function BecomeProviderPage() {
       brandName: "",
       tagline: "",
       description: "",
+      ownerFullName: "",
+      password: "",
       contactEmail: "",
       contactPhone: "",
       address: "",
@@ -53,7 +55,16 @@ export default function BecomeProviderPage() {
       // Simulate network delay
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      // 1. Create Provider
+      // 1. Create Admin Account (Profile)
+      const profile = registerUser(
+        data.contactEmail,
+        data.password,
+        data.ownerFullName,
+        data.contactPhone,
+        "provider_admin"
+      );
+
+      // 2. Create Provider
       const provider = createProvider({
         brandName: data.brandName,
         tagline: data.tagline,
@@ -65,11 +76,11 @@ export default function BecomeProviderPage() {
         country: data.country,
         logoUrl: data.logoUrl || undefined,
         themeJson: { webglPreset: "gold", accentColor: "#C8A96A" }, // default theme
-        ownerId: "demo_owner_id",
+        ownerId: profile.id,
         story: "A new standard for premium spaces.",
       });
 
-      // 2. Create Initial Venue
+      // 3. Create Initial Venue
       createVenue({
         providerId: provider.id,
         name: data.firstVenueName,
@@ -185,6 +196,30 @@ export default function BecomeProviderPage() {
                       className={`w-full bg-bg border ${errors.description ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors resize-none`}
                     />
                     {errors.description && <p className="mt-1 text-xs text-danger">{errors.description.message}</p>}
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:col-span-2">
+                    <div>
+                      <label className="block text-sm font-medium text-text-secondary mb-2">Owner Full Name *</label>
+                      <input 
+                        type="text"
+                        {...register("ownerFullName")}
+                        placeholder="e.g. John Doe"
+                        className={`w-full bg-bg border ${errors.ownerFullName ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
+                      />
+                      {errors.ownerFullName && <p className="mt-1 text-xs text-danger">{errors.ownerFullName.message}</p>}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-text-secondary mb-2">Admin Password *</label>
+                      <input 
+                        type="password"
+                        {...register("password")}
+                        placeholder="At least 8 characters"
+                        className={`w-full bg-bg border ${errors.password ? 'border-danger' : 'border-border'} rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
+                      />
+                      {errors.password && <p className="mt-1 text-xs text-danger">{errors.password.message}</p>}
+                    </div>
                   </div>
 
                   <div>

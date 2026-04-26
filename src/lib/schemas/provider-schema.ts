@@ -21,6 +21,17 @@ export const providerRegistrationSchema = z.object({
     .min(50, "Description must be at least 50 characters")
     .max(1000, "Description must be under 1000 characters"),
 
+  ownerFullName: z
+    .string()
+    .min(2, "Full name must be at least 2 characters")
+    .max(100, "Full name must be under 100 characters"),
+
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .max(50, "Password must be under 50 characters"),
+
+
   contactEmail: z
     .string()
     .email("Please enter a valid email address"),
