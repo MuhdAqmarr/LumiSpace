@@ -86,14 +86,15 @@ export default function AllProvidersPage() {
             const Icon = cfg.icon;
             return (
               <div key={provider.id} className="p-6 flex flex-col xl:flex-row xl:items-center gap-6 hover:bg-bg-elevated/50 transition-colors">
-                {/* Logo */}
+                {/* Logo / Hero Thumbnail */}
                 <div className="w-16 h-16 rounded-xl bg-bg-elevated border border-border flex items-center justify-center shrink-0 relative overflow-hidden">
-                  {provider.logoUrl ? (
-                    <Image src={provider.logoUrl} alt={provider.brandName} fill className="object-cover" />
+                  {provider.heroImageUrl ? (
+                    <Image src={provider.heroImageUrl} alt={provider.brandName} fill className="object-cover" />
                   ) : (
                     <Store className="w-7 h-7 text-text-muted" />
                   )}
                 </div>
+
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
