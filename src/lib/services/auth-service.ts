@@ -6,7 +6,7 @@
 import { Profile, UserRole } from "@/lib/types";
 
 const AUTH_KEY = "lumispace_auth";
-const ACCOUNTS_KEY = "lumispace_accounts";
+const ACCOUNTS_KEY = "lumispace_accounts_v3";
 
 // Demo credentials
 const SEED_ACCOUNTS: { email: string; password: string; profile: Profile }[] = [
