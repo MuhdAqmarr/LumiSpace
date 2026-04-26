@@ -7,25 +7,44 @@ import { getProviderById } from "@/lib/services/provider-service";
 import { Venue } from "@/lib/types";
 import Image from "next/image";
 
+import { getProviders } from "@/lib/services/provider-service";
+import CustomSelect from "@/components/ui/CustomSelect";
+
 export default function AllVenuesPage() {
-  const [venues, setVenues] = useState<Venue[]>([]);
+  const [allVenues, setAllVenues] = useState<Venue[]>([]);
+  const [filteredVenues, setFilteredVenues] = useState<Venue[]>([]);
+  const [providers, setProviders] = useState<{ id: string; brandName: string }[]>([]);
+  const [selectedProviderId, setSelectedProviderId] = useState("all");
   const [providerNames, setProviderNames] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const all = getVenues();
-    setVenues(all);
+    const venues = getVenues();
+    const provs = getProviders();
+    setAllVenues(venues);
+    setFilteredVenues(venues);
+    setProviders(provs.map(p => ({ id: p.id, brandName: p.brandName })));
+
     // Resolve provider names
     const names: Record<string, string> = {};
-    all.forEach(v => {
+    venues.forEach(v => {
       if (!names[v.providerId]) {
-        const p = getProviderById(v.providerId);
+        const p = provs.find(pr => pr.id === v.providerId);
         names[v.providerId] = p?.brandName ?? v.providerId;
       }
     });
     setProviderNames(names);
     setLoading(false);
   }, []);
+
+  useEffect(() => {
+    if (selectedProviderId === "all") {
+      setFilteredVenues(allVenues);
+    } else {
+      setFilteredVenues(allVenues.filter(v => v.providerId === selectedProviderId));
+    }
+  }, [selectedProviderId, allVenues]);
+
 
   if (loading) {
     return (
@@ -42,15 +61,30 @@ export default function AllVenuesPage() {
         <p className="text-text-secondary">Platform-wide view of all listed venues across every provider.</p>
       </div>
 
-      {/* Count badge */}
-      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gold/10 border border-gold/20 text-gold text-sm font-medium mb-8">
-        <Building2 className="w-4 h-4" />
-        {venues.length} total venues
+      {/* Filters & Count */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+        <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gold/10 border border-gold/20 text-gold text-sm font-medium w-fit">
+          <Building2 className="w-4 h-4" />
+          {filteredVenues.length} {filteredVenues.length === 1 ? "venue" : "venues"}
+        </div>
+
+        <div className="w-full md:w-72">
+          <CustomSelect
+            options={[
+              { value: "all", label: "All Providers" },
+              ...providers.map(p => ({ value: p.id, label: p.brandName }))
+            ]}
+            value={selectedProviderId}
+            onChange={setSelectedProviderId}
+            placeholder="Filter by Provider"
+          />
+        </div>
       </div>
 
       {/* Venue Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {venues.map((venue) => (
+        {filteredVenues.map((venue) => (
+
           <div key={venue.id} className="bg-bg-surface rounded-2xl border border-border overflow-hidden flex flex-col hover:border-gold/40 transition-colors">
             {/* Image */}
             <div className="aspect-video relative bg-bg-elevated">
