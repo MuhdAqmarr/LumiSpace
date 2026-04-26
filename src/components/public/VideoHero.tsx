@@ -50,12 +50,13 @@ export default function VideoHero() {
         {/* Headline */}
         <ScrollReveal delay={0.4} distance={50}>
           <h1 className="font-display text-5xl font-medium leading-[1.1] tracking-tight text-text-primary md:text-7xl lg:text-8xl">
-            Find the room
+            Where your
             <br />
-            <span className="italic text-gold">where the night</span>
+            <span className="italic text-gold">cinematic vision</span>
             <br />
-            begins.
+            finds its stage.
           </h1>
+
         </ScrollReveal>
 
         {/* Subheadline */}
