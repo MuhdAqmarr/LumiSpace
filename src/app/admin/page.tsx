@@ -11,8 +11,8 @@ import { Booking } from "@/lib/types";
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState({ pending: 0, approved: 0, rejected: 0, total: 0, thisMonth: 0 });
-  const [platformStats, setPlatformStats] = useState({ providers: 0, venues: 0, bookings: 0, pending: 0 });
-  const [recentBookings, setRecentBookings] = useState<Booking[]>([]);
+  const [platformStats, setPlatformStats] = useState({ providers: 0, venues: 0, bookings: 0, pendingProviders: 0 });
+  const [recentBookings, setRecentBookings] = useState<any[]>([]); // Can be bookings or providers
   const [loading, setLoading] = useState(true);
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
@@ -24,15 +24,24 @@ export default function AdminDashboardPage() {
         const allBookings = getBookings();
         const allVenues = getVenues();
         const allProviders = getProviders();
+        const pendingProviders = allProviders.filter(p => p.status === "pending");
+        
         setPlatformStats({
           providers: allProviders.length,
           venues: allVenues.length,
           bookings: allBookings.length,
-          pending: allBookings.filter(b => b.status === "pending").length,
+          pendingProviders: pendingProviders.length,
         });
-        allBookings.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        setRecentBookings(allBookings.slice(0, 5));
+
+        // For Super Admin, we show pending providers first, then recent bookings
+        if (pendingProviders.length > 0) {
+          setRecentBookings(pendingProviders.slice(0, 5));
+        } else {
+          allBookings.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          setRecentBookings(allBookings.slice(0, 5));
+        }
       } else {
+
         const providerId = getProviderIdForUser(user.id);
         if (providerId) {
           setStats(getProviderStats(providerId));
@@ -145,50 +154,87 @@ export default function AdminDashboardPage() {
             </div>
           </>
         )}
-
       </div>
 
-      {/* Recent Bookings */}
+      {/* Recent Activity */}
       <div className="glass-strong rounded-2xl border border-border overflow-hidden">
         <div className="p-6 border-b border-border flex items-center justify-between">
-          <h2 className="font-display text-2xl text-text-primary">Recent Booking Requests</h2>
-          <Link href={isSuperAdmin ? "/admin/all-bookings" : "/admin/bookings"} className="text-sm text-gold hover:underline">
+          <h2 className="font-display text-2xl text-text-primary">
+            {isSuperAdmin && recentBookings.length > 0 && (recentBookings[0] as any).brandName 
+              ? "Pending Provider Registrations" 
+              : "Recent Booking Requests"}
+          </h2>
+          <Link href={isSuperAdmin ? (recentBookings.length > 0 && (recentBookings[0] as any).brandName ? "/admin/all-providers" : "/admin/all-bookings") : "/admin/bookings"} className="text-sm text-gold hover:underline">
             View All
           </Link>
         </div>
         
         {recentBookings.length > 0 ? (
           <div className="divide-y divide-border">
-            {recentBookings.map((booking) => (
-              <div key={booking.id} className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-bg-elevated/50 transition-colors">
-                <div>
-                  <div className="flex items-center gap-3 mb-1">
-                    <span className="font-mono text-sm text-text-primary">{booking.bookingCode}</span>
-                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                      booking.status === 'approved' ? 'bg-success/10 text-success border-success/20' :
-                      booking.status === 'rejected' ? 'bg-danger/10 text-danger border-danger/20' :
-                      'bg-warning/10 text-warning border-warning/20'
-                    }`}>
-                      {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
-                    </span>
+            {recentBookings.map((item) => {
+              const isProvider = (item as any).brandName !== undefined;
+              
+              if (isProvider) {
+                return (
+                  <div key={item.id} className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-bg-elevated/50 transition-colors">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-bg border border-border flex items-center justify-center shrink-0">
+                        <Store className="w-6 h-6 text-gold" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-3 mb-1">
+                          <span className="font-display text-lg text-text-primary">{item.brandName}</span>
+                          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium border bg-warning/10 text-warning border-warning/20">
+                            New Registration
+                          </span>
+                        </div>
+                        <p className="text-sm text-text-secondary">
+                          Registered from <span className="text-text-primary">{item.city}, {item.country}</span> • Pending review
+                        </p>
+                      </div>
+                    </div>
+                    <Link 
+                      href="/admin/all-providers"
+                      className="shrink-0 px-6 py-2 bg-gold text-bg rounded-lg text-sm font-semibold uppercase tracking-wider hover:bg-gold-light transition-colors text-center"
+                    >
+                      Review Provider
+                    </Link>
                   </div>
-                  <p className="text-sm text-text-secondary">
-                    <span className="text-text-primary">{booking.customerName}</span> requests to book for <span className="text-text-primary">{booking.eventDate}</span>
-                  </p>
+                );
+              }
+
+              const booking = item as Booking;
+              return (
+                <div key={booking.id} className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-bg-elevated/50 transition-colors">
+                  <div>
+                    <div className="flex items-center gap-3 mb-1">
+                      <span className="font-mono text-sm text-text-primary">{booking.bookingCode}</span>
+                      <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                        booking.status === 'approved' ? 'bg-success/10 text-success border-success/20' :
+                        booking.status === 'rejected' ? 'bg-danger/10 text-danger border-danger/20' :
+                        'bg-warning/10 text-warning border-warning/20'
+                      }`}>
+                        {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                      </span>
+                    </div>
+                    <p className="text-sm text-text-secondary">
+                      <span className="text-text-primary">{booking.customerName}</span> requests to book for <span className="text-text-primary">{booking.eventDate}</span>
+                    </p>
+                  </div>
+                  <Link 
+                    href={`/admin/bookings/${booking.id}`}
+                    className="shrink-0 px-4 py-2 border border-border-gold rounded-lg text-sm text-gold hover:bg-gold hover:text-bg transition-colors text-center"
+                  >
+                    Review Details
+                  </Link>
                 </div>
-                <Link 
-                  href={`/admin/bookings/${booking.id}`}
-                  className="shrink-0 px-4 py-2 border border-border-gold rounded-lg text-sm text-gold hover:bg-gold hover:text-bg transition-colors text-center"
-                >
-                  Review Details
-                </Link>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="p-12 text-center flex flex-col items-center">
             <AlertCircle className="w-8 h-8 text-text-muted mb-3" />
-            <p className="text-text-secondary">No booking requests found.</p>
+            <p className="text-text-secondary">No recent activity found.</p>
           </div>
         )}
       </div>
