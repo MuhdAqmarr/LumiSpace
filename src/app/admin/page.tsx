@@ -160,7 +160,7 @@ export default function AdminDashboardPage() {
       {isSuperAdmin ? (
         <div className="space-y-12">
           {/* Pending Section - Only show if there are pending registrations */}
-          {pendingProviders.length > 0 && (
+          {pendingProviders.length > 0 ? (
             <div className="glass-strong rounded-2xl border border-border overflow-hidden">
               <div className="p-6 border-b border-border bg-warning/5 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -201,54 +201,18 @@ export default function AdminDashboardPage() {
                 ))}
               </div>
             </div>
-          )}
-
-          {/* Recent Active Providers */}
-          <div className="glass-strong rounded-2xl border border-border overflow-hidden">
-            <div className="p-6 border-b border-border flex items-center justify-between">
-              <h2 className="font-display text-2xl text-text-primary">Recently Onboarded Partners</h2>
-              <Link href="/admin/all-providers" className="text-sm text-gold hover:underline">
-                Manage All
+          ) : (
+            <div className="glass-strong p-12 rounded-2xl border border-border border-dashed text-center flex flex-col items-center">
+              <CheckCircle2 className="w-10 h-10 text-success mb-4" />
+              <h3 className="font-display text-xl text-text-primary mb-2">All Caught Up!</h3>
+              <p className="text-text-secondary max-w-xs">No pending provider registrations to review at the moment.</p>
+              <Link href="/admin/all-providers" className="mt-6 text-sm text-gold hover:underline font-medium">
+                Manage Existing Providers →
               </Link>
             </div>
-            <div className="divide-y divide-border">
-              {activeProviders.length > 0 ? (
-                activeProviders.map((item) => (
-                  <div key={item.id} className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-bg-elevated/50 transition-colors">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-bg border border-border flex items-center justify-center shrink-0 relative overflow-hidden">
-                        {item.heroImageUrl ? (
-                          <Image src={item.heroImageUrl} alt={item.brandName} fill className="object-cover opacity-30" />
-                        ) : (
-                          <Store className="w-6 h-6 text-gold" />
-                        )}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-3 mb-1">
-                          <span className="font-display text-lg text-text-primary">{item.brandName}</span>
-                          <span className="px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-medium border bg-success/10 text-success border-success/20">
-                            Active Partner
-                          </span>
-                        </div>
-                        <p className="text-sm text-text-secondary">
-                          {item.city}, {item.country} • Partner since {new Date(item.createdAt).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-                    <Link 
-                      href="/admin/all-providers"
-                      className="shrink-0 px-6 py-2 border border-border-gold rounded-lg text-sm text-gold hover:bg-gold hover:text-bg transition-colors text-center"
-                    >
-                      Manage Provider
-                    </Link>
-                  </div>
-                ))
-              ) : (
-                <div className="p-12 text-center text-text-secondary">No active partners yet.</div>
-              )}
-            </div>
-          </div>
+          )}
         </div>
+
       ) : (
         /* Provider Admin Activity - Booking Focus */
         <div className="glass-strong rounded-2xl border border-border overflow-hidden">
