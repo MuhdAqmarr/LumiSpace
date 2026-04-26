@@ -47,9 +47,9 @@ export default function BecomeProviderPage() {
       brandHeaderImageUrl: "",
       venueHeroImageUrl: "",
       heroVideoUrl: "",
-      logoUrl: "",
     },
   });
+
 
   const onSubmit = async (data: ProviderRegistrationFormValues) => {
     setIsSubmitting(true);
@@ -77,7 +77,6 @@ export default function BecomeProviderPage() {
         address: data.address,
         city: data.city,
         country: data.country,
-        logoUrl: data.logoUrl || undefined,
         heroImageUrl: data.brandHeaderImageUrl || undefined,
         themeJson: { webglPreset: "gold", accentColor: "#C8A96A" }, // default theme
         ownerId: profile.id,
@@ -405,18 +404,10 @@ export default function BecomeProviderPage() {
                       />
                       {errors.venueHeroImageUrl && <p className="mt-1 text-xs text-danger">{errors.venueHeroImageUrl.message}</p>}
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-text-secondary mb-2">Brand Logo URL (Optional)</label>
-                      <input 
-                        type="url"
-                        {...register("logoUrl")}
-                        placeholder="https://brand.com/logo.png"
-                        className={`w-full bg-bg border border-border rounded-xl px-4 py-3 text-text-primary outline-none focus:border-gold transition-colors`}
-                      />
-                    </div>
                   </div>
                 </div>
               </div>
+
 
 
               <div className="pt-8 border-t border-border flex justify-end">

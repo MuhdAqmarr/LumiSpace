@@ -86,8 +86,8 @@ export const providerRegistrationSchema = z.object({
   brandHeaderImageUrl: z.string().optional().or(z.literal("")),
   venueHeroImageUrl: z.string().optional().or(z.literal("")),
   heroVideoUrl: z.string().optional().or(z.literal("")),
-  logoUrl: z.string().optional().or(z.literal("")),
 });
+
 
 
 export type ProviderRegistrationFormValues = z.infer<
