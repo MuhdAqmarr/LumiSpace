@@ -48,8 +48,9 @@ export default function AdminLayout({
               if (provider) name = provider.brandName;
             }
           } else {
-            name = "LumiSpace Admin";
+            name = "Super Admin";
           }
+
 
           setUser({ displayName: name, email: u.email, role: u.role });
           setIsSuperAdmin(isSuper);
