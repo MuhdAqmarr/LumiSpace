@@ -79,7 +79,25 @@
     line-height: 1.2;
     letter-spacing: -0.02em;
   }
+
+  button, 
+  a, 
+  input[type="submit"], 
+  input[type="button"], 
+  input[type="checkbox"], 
+  input[type="radio"], 
+  label[for], 
+  select,
+  [role="button"] {
+    cursor: pointer;
+  }
+
+
+  button:disabled {
+    cursor: not-allowed;
+  }
 }
+
 
 /* ─── Selection ──────────────────────────────────────────────────── */
 ::selection {
